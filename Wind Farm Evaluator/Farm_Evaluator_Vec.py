@@ -472,14 +472,14 @@ if __name__ == "__main__":
     turb_rad       =  turb_diam/2 
     
     # Turbine x,y coordinates
-    # turb_coords   =  getTurbLoc('Shell_Hackathon Dataset/Shell_Hackathon Dataset/turbine_loc_test.csv')
+    # turb_coords   =  getTurbLoc('Shell_Hackathon Dataset/turbine_loc_test.csv')
     turb_coords   =  getTurbLoc('Wind Farm Evaluator/my_trials/random_test.csv')
     # Load the power curve
-    power_curve   =  loadPowerCurve('Shell_Hackathon Dataset/Shell_Hackathon Dataset/power_curve.csv')
+    power_curve   =  loadPowerCurve('Shell_Hackathon Dataset/power_curve.csv')
     
     # Pass wind data csv file location to function binWindResourceData.
     # Retrieve probabilities of wind instance occurence.
-    wind_inst_freq =  binWindResourceData('Shell_Hackathon Dataset/Shell_Hackathon Dataset/Wind Data/wind_data_2007.csv')   
+    wind_inst_freq =  binWindResourceData('Shell_Hackathon Dataset/Wind Data/wind_data_2007.csv')   
     
     # Doing preprocessing to avoid the same repeating calculations. Record 
     # the required data for calculations. Do that once. Data are set up (shaped)
