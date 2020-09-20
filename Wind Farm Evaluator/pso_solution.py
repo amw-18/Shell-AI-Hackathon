@@ -37,7 +37,7 @@ def get_random_arrangement(n_turbs):
 
     return turbine_pos
 
-def get_init(n_turbs,mul):
+def get_init(n_turbs,mul=1):
     """Function to get initial valid positions for pso"""
     all_particles = np.ndarray((mul*n_turbs,2*n_turbs))
     for _ in range(mul*n_turbs):
@@ -111,7 +111,7 @@ def my_optim(n_turbs,a,c1,c2,w,kwargs):
     kwargs['a'] = a   
 
     
-    cost, pos = optimizer.optimize(obj, iters=100, kwargs=kwargs)
+    cost, pos = optimizer.optimize(obj, iters=100, kwargs=kwargs)  # takes 5 hours with mul=10 and iter=100
 
     return cost, pos
 
@@ -146,16 +146,18 @@ if __name__ == '__main__':
 
     cost,pos = my_optim(n_turbs, a, c1, c2, w, kwargs)
     
-    print('AEP is ', 11.297*n_turbs/obj_util(pos, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, a))
+    print('AEP is ', 11.297*n_turbs/(obj_util(pos, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, a)+1))
 
     pos_rand = get_init(n_turbs)[0]
-    print('Random AEP is', 11.297*n_turbs/obj_util(pos_rand, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, a))
+    print('Random AEP is', 11.297*n_turbs/(obj_util(pos_rand, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, a)+1))
 
     pos = np.array([pos[i:i+2] for i in range(0,2*n_turbs-1,2)])
 
 
     turbines = pd.DataFrame(pos,columns=['x','y'])
-    turbines.to_csv("C:/Users/awals/Downloads/Shell AI Hackathon/Wind Farm Evaluator/my_trials/second_swarm_ans.csv",index=False)
+    
+    # uncomment following line to save results
+    # turbines.to_csv("C:/Users/awals/Downloads/Shell AI Hackathon/Wind Farm Evaluator/my_trials/which_swarm_ans.csv",index=False)
 
     pos_rand = np.array([pos_rand[i:i+2] for i in range(0,2*n_turbs-1,2)])
     plt.scatter(pos[:,0],pos[:,1])
