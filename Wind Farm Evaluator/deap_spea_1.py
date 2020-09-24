@@ -176,7 +176,7 @@ for g in range(MAX_GENS):
     Elite = tools.selSPEA2(Elite, N_ELITE)
 
     # creating the parent population by tournament selection
-    Parent_sel = tools.selTournament(Offspring, N_PARENT, TOURN_SIZE, fit_attr='fitness')
+    Parent_sel = tools.selTournament([*Offspring, *Elite], N_PARENT, TOURN_SIZE, fit_attr='fitness')
     Parent = [toolbox.clone(ind) for ind in Parent_sel]
 
     # doing uniform cross-over and mutating
@@ -189,7 +189,7 @@ for g in range(MAX_GENS):
 
     if g%10 == 0:
         print(g,end='')
-    else:
+    else: 
         print('*',end='')
 
 for ind in Offspring:
@@ -209,3 +209,4 @@ Elite = tools.selSPEA2(Elite, N_ELITE)
 for ind in Elite:
     print(ind.fitness.values[0], ind.fitness.values[1])
 
+print('end')

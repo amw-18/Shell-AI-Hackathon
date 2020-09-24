@@ -473,7 +473,7 @@ if __name__ == "__main__":
     
     # Turbine x,y coordinates
     # turb_coords   =  getTurbLoc('Shell_Hackathon Dataset/turbine_loc_test.csv')
-    turb_coords   =  getTurbLoc('Wind Farm Evaluator/my_trials/second_swarm_ans.csv')
+    turb_coords   =  getTurbLoc('Wind Farm Evaluator/my_trials/second_deap_ans.csv')
     # Load the power curve
     power_curve   =  loadPowerCurve('Shell_Hackathon Dataset/power_curve.csv')
     
