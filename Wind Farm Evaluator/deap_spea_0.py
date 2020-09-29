@@ -45,13 +45,13 @@ def get_args(n_turbs):
     turb_rad = 50.0
 
     # Loading the power curve
-    power_curve   =  loadPowerCurve('C:/Users/awals/Downloads/Shell AI Hackathon/Shell_Hackathon Dataset/power_curve.csv')
+    power_curve   =  loadPowerCurve('./Shell_Hackathon Dataset/power_curve.csv')
 
     # Loading wind data 
     years = ['07','08','09','13','14','15','17']
     wind_inst_freqs = []
     for y in years:
-        wind_inst_freqs.append(binWindResourceData(f'C:/Users/awals/Downloads/Shell AI Hackathon/Shell_Hackathon Dataset/Wind Data/wind_data_20{y}.csv'))
+        wind_inst_freqs.append(binWindResourceData(f'./Shell_Hackathon Dataset/Wind Data/wind_data_20{y}.csv'))
     
     # preprocessing the wind data to avoid repeated calculations
     n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t = preProcessing(power_curve,n_turbs)

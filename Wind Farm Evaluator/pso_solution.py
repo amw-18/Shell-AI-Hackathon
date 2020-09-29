@@ -1,98 +1,97 @@
 import sys
 sys.path.insert(1, '/path/to/Wind Farm Evaluator')
 
-import pandas as pd 
-import numpy as np 
-import pyswarms as ps
-import random
 
-import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import pyswarms as ps 
+
+import matplotlib.pyplot as plt 
 
 from Vec_modified import *
 
-
 def get_random_arrangement(n_turbs):
+    """
+    Gets a valid random individual as a numpy array of shape (n_turbs, 2)
+    """
 
-    def get_point():
-        """Returns random integer from 50 to 3950 inclusive"""
-        return random.uniform(50,3950)
+    def get_turb(a, b):
+        """ 
+            returns two random numbers between a and b from a unifrom distribution
+            as a numpy array
+        """
+        return np.random.uniform(a, b, 2)
 
+    def is_valid(individual, turb):
+        """
+            Checks if the turbine is a valid fit inside the individual
+            individual : numpy array of turbines with shape (n_turbs, 2)
+            turb : one turbine with shape (1, 2)
+        """
+        distances = np.linalg.norm(individual - turb, axis=1)
+        return min(distances) > 400
 
-    def is_valid(point):
-        """Checks if given point is valid"""
-        point = np.array(point)
-        point = np.reshape(point,(1,2))
-        # getting array of distances to every other point
-        dist = np.linalg.norm(turbine_pos - point,axis=1)
-
-        return min(dist) > 400   # 400 is the problem constraint
-
-    turbine_pos = np.full((n_turbs,2),np.inf)
+    rand_ind = np.full((n_turbs, 2), np.inf)
     count = 0
     while count < n_turbs:
-        point = [get_point(),get_point()] # x,y
-        if is_valid(point):
-            turbine_pos[count,:] = point
+        turb = get_turb(50, 3950)
+        if is_valid(rand_ind, turb):
+            rand_ind[count,:] = turb
             count += 1
 
-    return turbine_pos
+    return rand_ind
 
-def get_init(n_turbs,mul=1):
-    """Function to get initial valid positions for pso"""
-    all_particles = np.ndarray((mul*n_turbs,2*n_turbs))
-    for _ in range(mul*n_turbs):
-        turb_xy = get_random_arrangement(n_turbs)
-        
-        ans = []
-        for turb in turb_xy:
-            ans.extend([turb[0],turb[1]])
-            
-        all_particles[_,:] = np.array(ans)
+def get_init(n_turbs, n_part=1):
+    """
+        Function to get initial valid positions for n_part particles
+    """
+    all_particles = np.ndarray((n_part,2*n_turbs))
+    for _ in range(n_part):
+        particle = get_random_arrangement(n_turbs)
+        all_particles[_,:] = particle.flatten()
 
     return all_particles
 
-
-def proxi_constraint(turb_coords):
+def proxi_constraint(particle):
     """
         Function to penalize if proximity contraint is violated.
-        turb_coords is a 2d numpy array with N (xi,yi) elements.
+        particle : numpy array with shape (n_turbs, 2)
     """
-    ans = 0
-    for i in range(turb_coords.shape[0]-1):
-        for j in range(i+1,turb_coords.shape[0]-1):
-            norm = np.linalg.norm(turb_coords[i]-turb_coords[j])
-            ans += max(0,400 - norm)
+    proxi_penalty = 0
+    for i in range(particle.shape[0]-1):  
+        for j in range(i+1,particle.shape[0]):
+            norm = np.linalg.norm(particle[i]-particle[j])
+            proxi_penalty += max(0,400 - norm)  # linear penalty
             
-    return ans
-
-
-def obj_util(turb_coords, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, a):
+    return proxi_penalty/(particle.shape[0]*400)    # dividing to normalize the value between 0 and 1
+        
+def obj_util(curr_particle, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, a):
     """
-        Objective function to be minimized w.r.t. turb_coords.
-        a : the hyperparameter to adjust the proxi_val contribution
+        Objective function to be minimized w.r.t. particle.
+        a : weight to use for proxi_penalty
     """
-
-    turb_coords = np.array([[turb_coords[i],turb_coords[i+1]] for i in range(0,2*n_turbs-1,2)])
-    mean_AEP = 0
+    global ideal_AEP
+    particle = curr_particle.reshape((n_turbs, 2))
+    aggr_AEP = 0
     for wind_inst_freq in wind_inst_freqs:
-        mean_AEP += getAEP(turb_rad, turb_coords, power_curve, wind_inst_freq, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t)
+        aggr_AEP += getAEP(turb_rad, particle, power_curve, wind_inst_freq, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t)
     
-    mean_AEP /= 7
+    mean_AEP = -aggr_AEP/len(wind_inst_freqs)  # negative because we want to maximize AEP
     
-    proxi_val = proxi_constraint(turb_coords)
+    proxi_penalty = proxi_constraint(particle)
     
-    ideal_AEP = 11.297*n_turbs  # 11.297 is the mean score for 1 turbine
-    
-    return ideal_AEP/mean_AEP + a*proxi_val - 1    # best ans is closest to zero
+    return mean_AEP/ideal_AEP + a*proxi_penalty
 
+def obj(swarm, kwargs):
+    """
+        Returns value of objective function for each particle in the swarm as a 1-D numpy
+        array of shape (n_particles,)
+    """
+    ans = np.ndarray((swarm.shape[0],))
+    for i, particle in enumerate(swarm):
+        ans[i] = obj_util(particle, **kwargs)
 
-def obj(turb_coords, kwargs):
-    ans = [None]*turb_coords.shape[0]
-    for i,turb_candidate in enumerate(turb_coords):
-        ans[i] = obj_util(turb_candidate, **kwargs)
-
-    return np.array(ans)
-
+    return ans
 
 def my_optim(n_turbs,a,c1,c2,w,kwargs):
 
@@ -101,36 +100,33 @@ def my_optim(n_turbs,a,c1,c2,w,kwargs):
 
     bounds = tuple([50*np.ones(2*n_turbs),3950*np.ones(2*n_turbs)])
 
-    mul = 10             # multiplier for number of particles
+    n_part = 1000            # number of particles in the swarm
 
-    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_turbs*mul, dimensions=2*n_turbs, 
-                                                    options=options, bounds=bounds, init_pos=get_init(n_turbs,mul))
+    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, 
+                                                    options=options, bounds=bounds, init_pos=get_init(n_turbs, n_part))
 
     
     kwargs['n_turbs'] = n_turbs
-    kwargs['a'] = a   
+    kwargs['a'] = a    
 
-    
-    cost, pos = optimizer.optimize(obj, iters=100, kwargs=kwargs)  # takes 5 hours with mul=10 and iter=100
-
-    return cost, pos
+    return optimizer.optimize(obj, iters=100, kwargs=kwargs)
 
 
 if __name__ == '__main__':
     
-    n_turbs = 50
+    n_turbs = 5
 
     # setting turbine radius
     turb_rad = 50.0
 
     # Loading the power curve
-    power_curve   =  loadPowerCurve('C:/Users/awals/Downloads/Shell AI Hackathon/Shell_Hackathon Dataset/power_curve.csv')
+    power_curve   =  loadPowerCurve('./Shell_Hackathon Dataset/power_curve.csv')
 
     # Loading wind data 
-    years = ['07','08','09','13','14','15','17']
+    years = ['07']
     wind_inst_freqs = []
     for y in years:
-        wind_inst_freqs.append(binWindResourceData(f'C:/Users/awals/Downloads/Shell AI Hackathon/Shell_Hackathon Dataset/Wind Data/wind_data_20{y}.csv'))
+        wind_inst_freqs.append(binWindResourceData(f'./Shell_Hackathon Dataset/Wind Data/wind_data_20{y}.csv'))
     
     # preprocessing the wind data to avoid repeated calculations
     n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t = preProcessing(power_curve,n_turbs)
@@ -139,33 +135,37 @@ if __name__ == '__main__':
             'n_wind_instances': n_wind_instances, 'cos_dir': cos_dir, 'sin_dir': sin_dir, 'wind_sped_stacked': wind_sped_stacked,
             'C_t': C_t} 
 
-    a = 1  # not very important, just makes sure that the solution follows proximity bounds
-    c2 = 0.3
-    w = 0.9
-    c1 = 0.5
+    # getting ideal_AEP for normalization purpose
+    ref_loc = get_random_arrangement(1)
+    ideal_AEP = 0
+    for wind_inst_freq in wind_inst_freqs:
+        ideal_AEP += getAEP(turb_rad, ref_loc, power_curve, wind_inst_freq, *preProcessing(power_curve, 1))
+    
+    ideal_AEP /= len(wind_inst_freqs)
+    ideal_AEP *= n_turbs
+
+    # defining parameters for optimization
+    a = 1  # weight for the proximity penalty -- not critical
+    c2 = 0.3  # social
+    w = 0.9  # inertia
+    c1 = 0.5  # cognitive
 
     cost,pos = my_optim(n_turbs, a, c1, c2, w, kwargs)
     
-    print('AEP is ', 11.297*n_turbs/(obj_util(pos, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, a)+1))
+    print('AEP is ', -ideal_AEP*obj_util(pos, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, 0))
 
-    pos_rand = get_init(n_turbs)[0]
-    print('Random AEP is', 11.297*n_turbs/(obj_util(pos_rand, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, a)+1))
+    pos_rand = get_random_arrangement(n_turbs).flatten()
+    print('Random AEP is', -ideal_AEP*obj_util(pos_rand, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, 0))
 
-    pos = np.array([pos[i:i+2] for i in range(0,2*n_turbs-1,2)])
+    pos = pos.reshape((n_turbs, 2))
+    pos_rand = pos_rand.reshape((n_turbs, 2))
 
-
-    turbines = pd.DataFrame(pos,columns=['x','y'])
-    
-    # uncomment following line to save results
+    ### uncomment following line to save results ###
+    # turbines = pd.DataFrame(pos,columns=['x','y'])
     # turbines.to_csv("C:/Users/awals/Downloads/Shell AI Hackathon/Wind Farm Evaluator/my_trials/which_swarm_ans.csv",index=False)
 
-    pos_rand = np.array([pos_rand[i:i+2] for i in range(0,2*n_turbs-1,2)])
     plt.scatter(pos[:,0],pos[:,1])
     plt.scatter(pos_rand[:,0],pos_rand[:,1])
     checkConstraints(pos,100.0)
     checkConstraints(pos_rand,100.0)
     plt.show()
-
-
-
-
