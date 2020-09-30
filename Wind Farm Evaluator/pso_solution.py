@@ -61,7 +61,7 @@ def proxi_constraint(particle):
     for i in range(particle.shape[0]-1):  
         for j in range(i+1,particle.shape[0]):
             norm = np.linalg.norm(particle[i]-particle[j])
-            proxi_penalty += max(0,400 - norm)  # linear penalty
+            proxi_penalty += max(0,1000 - norm)  # linear penalty
             
     return proxi_penalty/(particle.shape[0]*400)    # dividing to normalize the value between 0 and 1
         
@@ -100,10 +100,10 @@ def my_optim(n_turbs,a,c1,c2,w,kwargs):
 
     bounds = tuple([50*np.ones(2*n_turbs),3950*np.ones(2*n_turbs)])
 
-    n_part = 1000            # number of particles in the swarm
+    n_part = 100          # number of particles in the swarm
 
-    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, 
-                                                    options=options, bounds=bounds, init_pos=get_init(n_turbs, n_part))
+    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-12,
+                                                    options=options, bounds=bounds)#, init_pos=get_init(n_turbs, n_part)
 
     
     kwargs['n_turbs'] = n_turbs
@@ -114,7 +114,7 @@ def my_optim(n_turbs,a,c1,c2,w,kwargs):
 
 if __name__ == '__main__':
     
-    n_turbs = 5
+    n_turbs = 4
 
     # setting turbine radius
     turb_rad = 50.0
@@ -146,26 +146,25 @@ if __name__ == '__main__':
 
     # defining parameters for optimization
     a = 1  # weight for the proximity penalty -- not critical
-    c2 = 0.3  # social
-    w = 0.9  # inertia
-    c1 = 0.5  # cognitive
+    c2 = 1.7  # social
+    w = 0.6  # inertia
+    c1 = 1.7  # cognitive
 
     cost,pos = my_optim(n_turbs, a, c1, c2, w, kwargs)
-    
     print('AEP is ', -ideal_AEP*obj_util(pos, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, 0))
+    pos = pos.reshape((n_turbs, 2))
+    checkConstraints(pos,100.0)
 
     pos_rand = get_random_arrangement(n_turbs).flatten()
     print('Random AEP is', -ideal_AEP*obj_util(pos_rand, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, 0))
-
-    pos = pos.reshape((n_turbs, 2))
     pos_rand = pos_rand.reshape((n_turbs, 2))
+    checkConstraints(pos_rand,100.0)
 
+    
     ### uncomment following line to save results ###
     # turbines = pd.DataFrame(pos,columns=['x','y'])
     # turbines.to_csv("C:/Users/awals/Downloads/Shell AI Hackathon/Wind Farm Evaluator/my_trials/which_swarm_ans.csv",index=False)
 
     plt.scatter(pos[:,0],pos[:,1])
     plt.scatter(pos_rand[:,0],pos_rand[:,1])
-    checkConstraints(pos,100.0)
-    checkConstraints(pos_rand,100.0)
     plt.show()
