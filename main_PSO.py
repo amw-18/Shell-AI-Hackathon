@@ -52,7 +52,7 @@ while len(opt_swarm) < 64:
 
     AEP = -kwargs['ideal_AEP']*obj_util(pos, **kwargs)
     best_score = max(best_score, AEP)
-    if AEP > 516.8:
+    if AEP > 517.30:
         opt_swarm.append(pos)
         print('*', end='')
 print()
@@ -65,7 +65,9 @@ AEP = -kwargs['ideal_AEP']*obj_util(pos, **kwargs)
 print('random_swarm aep', best_score)
 print('opt_swarm aep', AEP)
 
+oswarm = pd.Dataframe(opt_swarm)
+oswarm.to_csv("C:/Users/awals/Downloads/Shell AI Hackathon/PSO/oswarm0.csv",index=False)
 
 ans = np.array(pos).reshape((50, 2))
 turbines = pd.DataFrame(ans,columns=['x','y'])
-turbines.to_csv("C:/Users/awals/Downloads/Shell AI Hackathon/Trials/50opt_swarm_ans.csv",index=False)
+turbines.to_csv("C:/Users/awals/Downloads/Shell AI Hackathon/Trials/opt_swarm_ans0.csv",index=False)
