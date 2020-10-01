@@ -109,59 +109,59 @@ def my_optim(n_turbs,a,c1,c2,w,kwargs):
     return optimizer.optimize(obj, iters=200, kwargs=kwargs)
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     
-    n_turbs = 10
+n_turbs = 5
 
-    # setting turbine radius
-    turb_rad = 50.0
+# setting turbine radius
+turb_rad = 50.0
 
-    # Loading the power curve
-    power_curve   =  loadPowerCurve('./Shell_Hackathon Dataset/power_curve.csv')
+# Loading the power curve
+power_curve   =  loadPowerCurve('./Shell_Hackathon Dataset/power_curve.csv')
 
-    # Loading wind data 
-    years = ['07']
-    wind_inst_freqs = []
-    for y in years:
-        wind_inst_freqs.append(binWindResourceData(f'./Shell_Hackathon Dataset/Wind Data/wind_data_20{y}.csv'))
-    
-    # preprocessing the wind data to avoid repeated calculations
-    n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t = preProcessing(power_curve,n_turbs)
+# Loading wind data 
+years = ['07']
+wind_inst_freqs = []
+for y in years:
+    wind_inst_freqs.append(binWindResourceData(f'./Shell_Hackathon Dataset/Wind Data/wind_data_20{y}.csv'))
 
-    kwargs = {'turb_rad': turb_rad, 'power_curve': power_curve, 'wind_inst_freqs': wind_inst_freqs,
-            'n_wind_instances': n_wind_instances, 'cos_dir': cos_dir, 'sin_dir': sin_dir, 'wind_sped_stacked': wind_sped_stacked,
-            'C_t': C_t} 
+# preprocessing the wind data to avoid repeated calculations
+n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t = preProcessing(power_curve,n_turbs)
 
-    # getting ideal_AEP for normalization purpose
-    ref_loc = get_random_arrangement(1)
-    ideal_AEP = 0
-    for wind_inst_freq in wind_inst_freqs:
-        ideal_AEP += getAEP(turb_rad, ref_loc, power_curve, wind_inst_freq, *preProcessing(power_curve, 1))
-    
-    ideal_AEP /= len(wind_inst_freqs)
-    ideal_AEP *= n_turbs
+kwargs = {'turb_rad': turb_rad, 'power_curve': power_curve, 'wind_inst_freqs': wind_inst_freqs,
+        'n_wind_instances': n_wind_instances, 'cos_dir': cos_dir, 'sin_dir': sin_dir, 'wind_sped_stacked': wind_sped_stacked,
+        'C_t': C_t} 
 
-    # defining parameters for optimization
-    a = 100  # weight for the proximity penalty -- critical only if random initialization done
-    c2 = 1.49  # social
-    w = 0.4  # inertia
-    c1 = 1.49  # cognitive
+# getting ideal_AEP for normalization purpose
+ref_loc = get_random_arrangement(1)
+ideal_AEP = 0
+for wind_inst_freq in wind_inst_freqs:
+    ideal_AEP += getAEP(turb_rad, ref_loc, power_curve, wind_inst_freq, *preProcessing(power_curve, 1))
 
-    cost,pos = my_optim(n_turbs, a, c1, c2, w, kwargs)
-    print('AEP is ', -ideal_AEP*obj_util(pos, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, 0))
-    pos = pos.reshape((n_turbs, 2))
-    checkConstraints(pos,100.0)
+ideal_AEP /= len(wind_inst_freqs)
+ideal_AEP *= n_turbs
 
-    pos_rand = get_random_arrangement(n_turbs).flatten()
-    print('Random AEP is', -ideal_AEP*obj_util(pos_rand, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, 0))
-    pos_rand = pos_rand.reshape((n_turbs, 2))
-    checkConstraints(pos_rand,100.0)
+# defining parameters for optimization
+a = 100  # weight for the proximity penalty -- critical only if random initialization done
+c2 = 1.49  # social
+w = 0.4  # inertia
+c1 = 1.49  # cognitive
 
-    
-    ### uncomment following line to save results ###
-    # turbines = pd.DataFrame(pos,columns=['x','y'])
-    # turbines.to_csv("C:/Users/awals/Downloads/Shell AI Hackathon/Wind Farm Evaluator/my_trials/which_swarm_ans.csv",index=False)
+cost,pos = my_optim(n_turbs, a, c1, c2, w, kwargs)
+print('AEP is ', -ideal_AEP*obj_util(pos, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, 0))
+pos = pos.reshape((n_turbs, 2))
+checkConstraints(pos,100.0)
 
-    plt.scatter(pos[:,0],pos[:,1])
-    plt.scatter(pos_rand[:,0],pos_rand[:,1])
-    plt.show()
+pos_rand = get_random_arrangement(n_turbs).flatten()
+print('Random AEP is', -ideal_AEP*obj_util(pos_rand, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, 0))
+pos_rand = pos_rand.reshape((n_turbs, 2))
+checkConstraints(pos_rand,100.0)
+
+
+### uncomment following line to save results ###
+# turbines = pd.DataFrame(pos,columns=['x','y'])
+# turbines.to_csv("C:/Users/awals/Downloads/Shell AI Hackathon/Wind Farm Evaluator/my_trials/which_swarm_ans.csv",index=False)
+
+plt.scatter(pos[:,0],pos[:,1])
+plt.scatter(pos_rand[:,0],pos_rand[:,1])
+plt.show()
