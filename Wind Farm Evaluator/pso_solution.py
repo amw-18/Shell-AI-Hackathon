@@ -61,7 +61,7 @@ def proxi_constraint(particle):
     for i in range(particle.shape[0]-1):  
         for j in range(i+1,particle.shape[0]):
             norm = np.linalg.norm(particle[i]-particle[j])
-            proxi_penalty += max(0,1000 - norm)  # linear penalty
+            proxi_penalty += max(0, 400-norm)  # linear penalty ##max(0, 400-norm)
             
     return proxi_penalty/(particle.shape[0]*400)    # dividing to normalize the value between 0 and 1
         
@@ -80,7 +80,7 @@ def obj_util(curr_particle, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_w
     
     proxi_penalty = proxi_constraint(particle)
     
-    return mean_AEP/ideal_AEP + a*proxi_penalty
+    return mean_AEP/ideal_AEP #+ a*proxi_penalty
 
 def obj(swarm, kwargs):
     """
@@ -99,22 +99,23 @@ def my_optim(n_turbs,a,c1,c2,w,kwargs):
     options = {'c1' : c1, 'c2' : c2, 'w' : w}
 
     bounds = tuple([50*np.ones(2*n_turbs),3950*np.ones(2*n_turbs)])
+    v_clamp = (-800, 800)
 
-    n_part = 100          # number of particles in the swarm
+    n_part = 64    # number of particles in the swarm (20-70) suggested
 
-    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-12,
-                                                    options=options, bounds=bounds)#, init_pos=get_init(n_turbs, n_part)
+    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-12, ftol_iter=10, center=[2000]*2*n_turbs,
+                            velocity_clamp=v_clamp, options=options, bounds=bounds, init_pos=get_init(n_turbs, n_part))
 
     
     kwargs['n_turbs'] = n_turbs
     kwargs['a'] = a    
 
-    return optimizer.optimize(obj, iters=100, kwargs=kwargs)
+    return optimizer.optimize(obj, iters=200, kwargs=kwargs)
 
 
 if __name__ == '__main__':
     
-    n_turbs = 4
+    n_turbs = 10
 
     # setting turbine radius
     turb_rad = 50.0
@@ -145,10 +146,10 @@ if __name__ == '__main__':
     ideal_AEP *= n_turbs
 
     # defining parameters for optimization
-    a = 1  # weight for the proximity penalty -- not critical
-    c2 = 1.7  # social
-    w = 0.6  # inertia
-    c1 = 1.7  # cognitive
+    a = 100  # weight for the proximity penalty -- critical only if random initialization done
+    c2 = 1.49  # social
+    w = 0.4  # inertia
+    c1 = 1.49  # cognitive
 
     cost,pos = my_optim(n_turbs, a, c1, c2, w, kwargs)
     print('AEP is ', -ideal_AEP*obj_util(pos, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t, 0))
