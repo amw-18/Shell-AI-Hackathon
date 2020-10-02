@@ -3872,3 +3872,119 @@ ValueError: shape mismatch: objects cannot be broadcast to a single shape
  2392.19584271  323.64328886 1698.87492291 1362.00328733 3666.11249482
  3765.8359013  2542.64005    1622.26456316 1551.27591559  216.65705096
   125.77291961 3139.33091073 3747.76110095 3876.53848654 3428.78680468]
+2020-10-02 07:18:46,102 - pyswarms.single.global_best - INFO - Optimize for 200 iters with {'c1': 0, 'c2': 1, 'w': 0}
+2020-10-02 07:19:15,955 - pyswarms.single.global_best - INFO - Optimization finished | best cost: -0.903231887194758, best pos: [1325.15533783  885.28650304 1057.88029852 1337.93369162 1968.97982527
+ 1597.79840585 1955.09353197  982.96495082 3044.9607283   877.46120496
+  420.43383599 2572.80746286  996.62394133 3314.02073135  897.88661333
+ 1784.4667461  3906.76219302  739.30160625 2086.17961113 2866.55216901
+ 1003.11844571 2343.62777428 3770.25453529 3536.54790723 2447.82633009
+ 3538.7800444  3337.91032475  346.64410102 2977.10999425 2385.20211303
+ 3854.37377191 1968.93263455  302.82536762  505.18898717 1739.55027481
+ 3480.33607825 1860.60806918  254.45821054  425.43938163 3298.70867986
+ 2435.6722224  2496.48539281 3335.72502286 1290.20974352 3258.78266019
+ 3566.38753373 2629.05853238 2099.23983665  740.89642809  117.80193387
+  707.20708561 2943.61259458 1597.89112148 2231.09179837 2125.5022418
+ 3806.92167401 2603.39636752  988.67580385  323.59709019 1322.42215341
+ 2123.39686884 2128.04907273 2927.74467338 3327.48599981 2656.1414138
+  549.9431985  3900.86789642   59.98017963  225.51190782 3892.80492419
+ 3036.08818074 1954.6373492  3803.40762982 3038.60949383 3606.40455752
+ 3941.32565953 3849.89380955 2406.63024099 3834.42095724 1148.64582531
+  720.71039453  703.0972275  1541.78394872 3094.80133029   55.45399977
+ 3032.03564209 2661.36998575 1649.16930904  178.20164304  912.80882702
+  837.35642684 3757.14440297 1314.19680674 3836.0487731    96.38707447
+ 2060.11603952 2405.6043778   147.41082643 3351.0771738  3050.24853395]
+2020-10-02 15:53:18,023 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:53:19,124 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:53:19,172 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:53:39,583 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:53:43,064 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:53:46,272 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:53:49,422 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:53:54,822 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:51,745 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:52,080 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:52,089 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:52,516 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:52,516 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:52,971 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:52,983 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:53,410 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:53,411 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:53,841 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:53,845 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:54,280 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:54,393 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:54,726 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:54,835 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:55,185 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:55,280 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:55,701 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:55,715 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:56,146 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:56,149 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:56,584 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:56,693 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:57,014 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:57,149 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:57,460 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:57,588 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:57,880 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:57,989 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:58,334 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:58,444 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:58,764 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:58,865 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:59,195 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:59,293 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:59,643 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:54:59,764 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:55:00,083 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:55:00,197 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:55:00,508 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:55:00,614 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:55:00,979 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:55:01,060 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:55:01,385 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:55:01,497 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:55:01,818 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:55:01,926 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:55:02,261 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:56:20,936 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:56:22,915 - pyswarms.single.global_best - INFO - Optimization finished | best cost: -959.6400280303762, best pos: [511.99981261 404.23211394]
+2020-10-02 15:56:45,456 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:56:57,804 - pyswarms.single.global_best - INFO - Optimization finished | best cost: -894.5789003906, best pos: [-465.69415141  385.71669948]
+2020-10-02 15:57:11,713 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:57:13,960 - pyswarms.single.global_best - INFO - Optimization finished | best cost: -956.9182316246659, best pos: [482.35331033 432.87899882]
+2020-10-02 15:57:22,808 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:57:25,186 - pyswarms.single.global_best - INFO - Optimization finished | best cost: -956.9182316246657, best pos: [482.35331028 432.87899873]
+2020-10-02 15:57:33,225 - pyswarms.single.global_best - INFO - Optimize for 1000 iters with {'c1': 1.49, 'c2': 1.49, 'w': 0}
+2020-10-02 15:57:35,997 - pyswarms.single.global_best - INFO - Optimization finished | best cost: -959.6406216767875, best pos: [511.99999944 404.23767242]
+2020-10-02 16:07:27,821 - pyswarms.single.global_best - INFO - Optimize for 200 iters with {'c1': 0, 'c2': 1.1, 'w': 0.01}
+2020-10-02 16:07:36,330 - pyswarms.single.global_best - INFO - Optimization finished | best cost: -0.9903382016503467, best pos: [2552.70296901  348.8571291   278.9514596  1282.81646335  682.93089389
+ 2784.38407357 1857.37065347  763.24609618 3262.04365417  241.19612081
+ 3883.50995159  146.17441361 3557.99827697 3224.05903753 1249.72866504
+ 3876.68164592 3735.31039094 2076.05418939 2257.36122411 3521.43804569]
+2020-10-02 16:22:42,956 - pyswarms.single.global_best - INFO - Optimize for 200 iters with {'c1': 0, 'c2': 1.1, 'w': 0.01}
+2020-10-02 16:22:47,372 - pyswarms.single.global_best - INFO - Optimization finished | best cost: -0.9992006502962262, best pos: [3437.75309439  306.53492898  645.61165867  849.0758212  1563.60044357
+ 2869.72112842 3189.69479365 3309.72592237   68.14884567 3570.34694639]
+2020-10-02 18:25:56,575 - pyswarms.single.global_best - INFO - Optimize for 200 iters with {'c1': 0, 'c2': 1.1, 'w': 0.01}
+2020-10-02 18:26:32,800 - pyswarms.single.global_best - INFO - Optimization finished | best cost: -0.9037440409048393, best pos: [1597.88668992   93.91102559  978.02626507 3396.60967438 1375.27281708
+  532.15562315 2153.43253588 3880.78846291 1474.86430156 1829.91749826
+  156.30856817  171.2733674  2879.54965652 3254.19108717  579.61053042
+ 3689.5449911  1396.34791333 2270.6390283  1779.54084772 2111.94687744
+ 1178.09041394 1233.35147016 1216.01029267 3063.82069381 2332.66700044
+  320.62315386 2340.95763828 3519.45625607 3511.75865955  314.19839581
+ 3410.33228664 2603.47686482 3868.80258149 1928.79074186 3795.65047891
+ 1510.80814843 3458.90650516  805.47563173 2042.8197001  2808.14714159
+ 3779.35358193 3094.83094371  747.2357535   149.81157311  752.632337
+ 1886.6065269  3220.74691901 1503.0427633   180.23906671 1388.50241675
+  671.12773002 2357.0450727  2257.01280057  741.34932381 1174.43246044
+ 3906.06575182 2716.63372142 1298.9536626  2969.78095772 2486.96532847
+  450.37342124  736.72247841 2883.48177221 1785.16918453   92.54056156
+ 1983.17017557 2960.99256966 3749.70712598 2853.94121463  805.62277233
+ 3925.17215319 3488.95296335 1650.74340795 1284.09911113  763.81625181
+ 1237.99396935 2448.21088731 2210.819914   2245.78553382 1602.2891475
+ 3906.08875254 2698.51675447 1666.68513661 3691.67601343  571.60372483
+ 3218.15180341   86.01598862 3389.93377822  156.41774541 2750.20793046
+ 3350.46882992 3407.81760748 3924.4683969    75.52479215  180.44903903
+ 3819.81617763 3427.23381913 2119.1682899  3877.81062737 1038.5794088 ]
