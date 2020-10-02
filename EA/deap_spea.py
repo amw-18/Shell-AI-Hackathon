@@ -8,82 +8,93 @@ from deap import base
 from deap import creator
 from deap import tools
 
-from Wind_Farm_Evaluator.Vec_modified import *
-from EA.arrangement import *
-
-
-def evaluate(individual, n_turbs, turb_rad, power_curve, wind_inst_freqs, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t):
-    """
-        Function to return values of both objectives as a tuple
-    """
-
-    # rearranging the terms in individual to pass to getAEP
-    turb_coords = np.array([[individual[i],individual[i+1]] for i in range(0,2*n_turbs-1,2)])
-
-    # calculating meanAEP for 
-    mean_AEP = 0
-    for wind_inst_freq in wind_inst_freqs:
-        mean_AEP += getAEP(turb_rad, turb_coords, power_curve, wind_inst_freq, n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t)
-    mean_AEP /= len(wind_inst_freqs)
-    
-    proxi_val = proxi_constraint(turb_coords)
-    
-    peri_val = peri_constraint(turb_coords)
-    
-    ideal_AEP = 11.297*n_turbs  # 11.297 is the mean score for 1 turbine
-    
-    return mean_AEP/ideal_AEP, proxi_val, peri_val  # First objective should be closest to 1 and second closest to zero
-
-def peri_constraint(turb_coords):
-    peri_val = 0
-    for turb in turb_coords:
-        for val in turb:
-            if val < 50:
-                peri_val += (50 - val)
-            elif val > 3950:
-                peri_val += (val - 3950)
-                
-    return peri_val
-
-def proxi_constraint(turb_coords):
-    """
-        Function to penalize if proximity contraint is violated.
-        turb_coords is a 2d numpy array with N (xi,yi) elements.
-    """
-    proxi_val = 0
-    for i in range(turb_coords.shape[0]-1):
-        for j in range(i+1,turb_coords.shape[0]-1):
-            norm = np.linalg.norm(turb_coords[i]-turb_coords[j])
-            proxi_val += max(0,400 - norm)
-
-    return proxi_val
-
+from EA.utils import *
 
 def initIndividual(icls, size):
     """
         Initialization function for an individual
     """
-    # initializing an individual
-    # ind = icls(random.uniform(FLT_MIN, FLT_MAX) for _ in range(size))
-    ind = icls(get_random_arrangement(size//2))
-    # initializing the individual's strategy
-
+    ind = icls(get_random_arrangement(size))
     return ind
 
 
+def main(N_TURB,CXPB = 0.5, MUTPB = 0.23):
+    #---------
+    # Create
+    #---------
+    creator.create("FitnessMulti", base.Fitness, weights=(1.0,)) 
+    creator.create("Individual", list , fitness=creator.FitnessMulti)
 
-N_TURB = 50
 
-# creating a multi-objective Fitness criteria, with maximizing first and minimizing second and third
-creator.create("FitnessMulti", base.Fitness, weights=(1.0, -1.0, -1.0)) 
-# creating an individual (potential solution) as a list with a fitness 
-creator.create("Individual", list , fitness=creator.FitnessMulti)
+    toolbox = base.Toolbox()
+    toolbox.register("individual", initIndividual, creator.Individual,N_TURB)
+    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+    # register the goal / fitness function
+    toolbox.register("evaluate", evaluateAEP)
 
-# creating a toolbox
-toolbox = base.Toolbox()
-# registering intiES in the toolbox with an alias "individual"
-toolbox.register("individual", initIndividual, creator.Individual,N_TURB)
-# registering a 'population' function that will create a population(set) of n individuals (n : parameter)
-toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+    # register the crossover operator
+    toolbox.register("mate", tools.cxTwoPoint)
 
-print('Done')
+    # register a mutation operator with a probability to
+    # flip each attribute/gene of 0.05
+    toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
+
+    # operator for selecting individuals for breeding the next
+    # generation: each individual of the current generation
+    # is replaced by the 'fittest' (best) of three individuals
+    # drawn randomly from the current generation.
+    toolbox.register("select", tools.selTournament, tournsize=3)
+
+
+    pop = toolbox.population(n=300)
+    fitnesses = list(map(toolbox.evaluate, pop))
+    for ind, fit in zip(pop, fitnesses):
+        ind.fitness.values = fit
+
+    print("  Evaluated %i individuals" % len(pop))
+
+    # Extracting all the fitnesses of 
+    fits = [ind.fitness.values[0] for ind in pop]
+
+    # Variable keeping track of the number of generations
+    g = 0
+
+    # Begin the evolution
+    while max(fits) < 100 and g < 1000:
+        # A new generation
+        g = g + 1
+        print("-- Generation %i --" % g)
+        
+        # Select the next generation individuals
+        offspring = toolbox.select(pop, len(pop))
+        # Clone the selected individuals
+        offspring = list(map(toolbox.clone, offspring))
+
+        # Apply crossover and mutation on the offspring
+        for child1, child2 in zip(offspring[::2], offspring[1::2]):
+
+            # cross two individuals with probability CXPB
+            if random.random() < CXPB:
+                toolbox.mate(child1, child2)
+
+                # fitness values of the children
+                # must be recalculated later
+                del child1.fitness.values
+                del child2.fitness.values
+
+        for mutant in offspring:
+
+            # mutate an individual with probability MUTPB
+            if random.random() < MUTPB:
+                toolbox.mutate(mutant)
+                del mutant.fitness.values
+
+
+
+
+    print('Done')   
+
+
+if __name__ == '__main__':
+    N_TURB = 50
+    main(N_TURB)
