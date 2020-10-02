@@ -99,7 +99,7 @@ def my_optim(n_turbs, a, c1, c2, w, init_vals):
 
     n_part = 64    # number of particles in the swarm (20-70) suggested
 
-    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-12, ftol_iter=10,# center=[2000]*2*n_turbs,
+    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-16, ftol_iter=15,
                             velocity_clamp=v_clamp, options=options, bounds=bounds, init_pos=init_vals)
    
 
