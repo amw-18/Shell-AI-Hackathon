@@ -118,7 +118,7 @@ def initES(icls, scls, size, smin, smax):
     return ind
 
 
-n_turbs = 5
+n_turbs = 50
 
 # creating a multi-objective Fitness criterio, with maximizing first and minimizing second and third
 creator.create("FitnessMulti", base.Fitness, weights=(1.0, -1.0, -1.0)) 
@@ -205,6 +205,6 @@ Elite = tools.selSPEA2(Elite, N_ELITE)
 
 
 for ind in Elite:
-    print(ind.fitness.values[0], ind.fitness.values[1])
+    print(ind.fitness.values[0], ind.fitness.values[1], ind.fitness.values[2])
 
 print('end')
