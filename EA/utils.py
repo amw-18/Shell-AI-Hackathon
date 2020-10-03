@@ -1,5 +1,9 @@
 import numpy as np
 import random
+import shapely
+from shapely.geometry import Point, Polygon, LineString, GeometryCollection
+from shapely.ops import nearest_points 
+from shapely import wkt
 
 from Wind_Farm_Evaluator.Vec_modified import *
 
@@ -93,3 +97,23 @@ def proxi_constraint(turb_coords):
             proxi_val += max(0,400 - norm)
 
     return proxi_val
+
+
+def checkBounds(Min, Max):
+    def decorator(func):
+        def wrapper(*args, **kargs):
+            offspring = func(*args, **kargs)
+            for child in offspring:
+                field = Polygon([(Min,Min), (Min,Max), (Max,Max), (Max,Min)])
+                for point in child:
+                    pt = Point(point)
+                    if field.contains(pt):
+                        pass
+                    else:
+                        pt_new,_ = nearest_points(field,pt)
+                        pt = Point(pt_new)
+                        point = [pt_new.x, pt_new.y]
+                    field = field.difference(pt.buffer(400))                   
+            return offspring
+        return wrapper
+    return decorator
