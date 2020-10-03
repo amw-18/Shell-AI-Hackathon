@@ -22,15 +22,14 @@ def get_random_arrangement(n_turbs):
         return min(dist) > 400   # 400 is the problem constraint
 
     turbine_pos = np.full((n_turbs,2),np.inf)
+    turb_list = []
     count = 0
-    ans = []
     while count < n_turbs:
         point = [get_point(),get_point()] # x,y
         if is_valid(point):
             turbine_pos[count,:] = point
-            ans.extend(point)
             count += 1
-
+            # turb_list.append(point)
     return turbine_pos
 
 
@@ -105,14 +104,16 @@ def checkBounds(Min, Max):
             offspring = func(*args, **kargs)
             for child in offspring:
                 field = Polygon([(Min,Min), (Min,Max), (Max,Max), (Max,Min)])
-                for point in child:
+                for i,point in enumerate(child):
                     pt = Point(point)
                     if field.contains(pt):
                         pass
                     else:
                         pt_new,_ = nearest_points(field,pt)
                         pt = Point(pt_new)
-                        point = [pt_new.x, pt_new.y]
+                        child[i] = np.array([pt.x, pt.y])
+                        # print(point)
+                        # print(child[i])
                     field = field.difference(pt.buffer(400))                   
             return offspring
         return wrapper

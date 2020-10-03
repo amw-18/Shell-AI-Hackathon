@@ -3,6 +3,7 @@ import array
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import multiprocessing
 
 from deap import base
 from deap import creator
@@ -18,7 +19,7 @@ def initIndividual(icls, size):
     return ind
 
 
-def main(N_TURB, MIN_LOC = 50, MAX_LOC = 3950, CXPB = 0.5, MUTPB = 0.23):
+def main(N_TURB, MIN_LOC = 50, MAX_LOC = 3950, CXPB = 0.5, MUTPB = 0.01):
     #---------
     # Create
     #---------
@@ -32,6 +33,8 @@ def main(N_TURB, MIN_LOC = 50, MAX_LOC = 3950, CXPB = 0.5, MUTPB = 0.23):
     # register the goal / fitness function
     toolbox.register("evaluate", evaluateAEP)
 
+    pool = multiprocessing.Pool()
+    toolbox.register("map", pool.map)
     # register the crossover operator
     toolbox.register("mate", tools.cxTwoPoint)
 
@@ -50,7 +53,7 @@ def main(N_TURB, MIN_LOC = 50, MAX_LOC = 3950, CXPB = 0.5, MUTPB = 0.23):
 
 
     pop = toolbox.population(n=300)
-    fitnesses = list(map(toolbox.evaluate, pop))
+    fitnesses = list(toolbox.map(toolbox.evaluate, pop))
     for ind, fit in zip(pop, fitnesses):
         ind.fitness.values = fit
 
@@ -71,7 +74,7 @@ def main(N_TURB, MIN_LOC = 50, MAX_LOC = 3950, CXPB = 0.5, MUTPB = 0.23):
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
         # Clone the selected individuals
-        offspring = list(map(toolbox.clone, offspring))
+        offspring = list(toolbox.map(toolbox.clone, offspring))
 
         # Apply crossover and mutation on the offspring
         for child1, child2 in zip(offspring[::2], offspring[1::2]):
@@ -94,7 +97,7 @@ def main(N_TURB, MIN_LOC = 50, MAX_LOC = 3950, CXPB = 0.5, MUTPB = 0.23):
 
         #Evaluate the individuals with an invalid fitness
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-        fitnesses = map(toolbox.evaluate, invalid_ind)
+        fitnesses = toolbox.map(toolbox.evaluate, invalid_ind)
         for ind, fit in zip(invalid_ind, fitnesses):
             ind.fitness.values = fit
         
