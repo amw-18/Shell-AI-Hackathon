@@ -4,7 +4,7 @@ import pandas as pd
 from pyswarms.utils.plotters import plot_cost_history
 
 if __name__ == "__main__":
-    oswarm = np.array(pd.read_csv('PSO/oswarm0.csv'))
+    oswarm = np.array(pd.read_csv('PSO/oswarm3.csv'))
     n_turbs = 50
 
     # setting turbine radius
@@ -14,7 +14,7 @@ if __name__ == "__main__":
     power_curve   =  loadPowerCurve('./Shell_Hackathon Dataset/power_curve.csv')
 
     # Loading wind data 
-    years = ['07','08','09','13','14','15','17']
+    years = ['07']
     wind_inst_freqs = []
     for y in years:
         wind_inst_freqs.append(binWindResourceData(f'./Shell_Hackathon Dataset/Wind Data/wind_data_20{y}.csv'))
@@ -41,21 +41,24 @@ if __name__ == "__main__":
     a = 100  # weight for the proximity penalty -- critical only if random initialization done
     c2 = 3  # social
     w = 0.009  # inertia
-    c1 = 0 # cognitive
+    c1 = 1 # cognitive
 
     kwargs['n_turbs'] = n_turbs
     kwargs['a'] = a
     kwargs['ideal_AEP'] = ideal_AEP
 
-    while w >= 0:
+    while w >= 0.001:
         optimizer = my_optim(n_turbs, a, c1, c2, w, oswarm)
         cost, pos = optimizer.optimize(obj, iters=200, kwargs=kwargs, verbose=True, n_processes=12)
         oswarm[np.random.randint(0,63),:] = pos
         AEP = -kwargs['ideal_AEP']*obj_util(pos, **kwargs)
         print('opt_swarm aep', AEP, -cost)
-        plot_cost_history(optimizer.cost_history)
-        plt.show()
+        # plot_cost_history(optimizer.cost_history)
+        # plt.show()
         w -= 0.0005
+
+    oswarm = pd.DataFrame(oswarm)
+    oswarm.to_csv("C:/Users/awals/Downloads/Shell AI Hackathon/PSO/oswarm4.csv",index=False)
 
     # arrgmnt = pos.reshape((10, 2))
     # plt.scatter(arrgmnt[:,0],arrgmnt[:,1])
