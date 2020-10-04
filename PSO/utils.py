@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from Wind_Farm_Evaluator.Vec_modified import *
 
 
-def get_random_arrangement(n_turbs):
+def get_random_arrangement(n_turbs, a=50, b=3950):
     """
     Gets a valid random individual as a numpy array of shape (n_turbs, 2)
     """
@@ -32,7 +32,7 @@ def get_random_arrangement(n_turbs):
     rand_ind = np.full((n_turbs, 2), np.inf)
     count = 0
     while count < n_turbs:
-        turb = get_turb(50, 3950)
+        turb = get_turb(a, b)
         if is_valid(rand_ind, turb):
             rand_ind[count,:] = turb
             count += 1
@@ -46,7 +46,7 @@ def get_init(n_turbs, n_part=1):
     """
     all_particles = np.ndarray((n_part,2*n_turbs))
     for _ in range(n_part):
-        particle = get_random_arrangement(n_turbs)
+        particle = get_smart_arrangement(n_turbs)
         all_particles[_,:] = particle.flatten()
 
     return all_particles
@@ -115,7 +115,7 @@ def get_optimizer(n_part, n_turbs, c1, c2, w, init_vals=None, v_clamp=False):
     if init_vals is None:
         init_vals = get_init(n_turbs, n_part)
   
-    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-08, ftol_iter=15,
+    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-05, ftol_iter=15,
                             velocity_clamp=v_clamp, options=options, bounds=bounds, init_pos=init_vals, bh_strategy='my_strategy')
 
     return optimizer
@@ -157,9 +157,22 @@ def parse_data_PSO(n_turbs):
     return kwargs
 
 
-# def get_smart_arrangement():
-#     ans = np.ndarray((50,2))
-#     ans[:4,:] = np.array[((50,50),(50,3950),(3950,50),(3950,3950))]
-#     n_border_ind = np.random.randint(6, 9)
-#     vals = np.linspace(50, 3950, n_border_ind+2)[1:-1]
-#     ans
+def get_smart_arrangement(n_turbs=50):
+    # n_bord = np.random.randint(5, 9)
+    n_bord = 8
+    bord_vals = np.linspace(50, 3950, n_bord+2)
+    left_bound = [np.array([50, val]) for val in bord_vals[1:-1]]
+    top_bound = [np.array([val, 3950]) for val in bord_vals]
+    right_bound = [np.array([3950, val]) for val in bord_vals[1:-1]]
+    bottom_bound = [np.array([val, 50]) for val in bord_vals]
+
+    ans = [*left_bound, *right_bound, *top_bound, *bottom_bound]
+    remaining = n_turbs - 4*n_bord - 4
+    ans.extend(get_random_arrangement(remaining, a=450, b=3550))
+    return np.array(ans)
+
+
+# if __name__ == '__main__':
+#     arr = get_smart_arrangement().reshape((50,2))
+#     plt.scatter(arr[:,0],arr[:,1])
+#     plt.show()
