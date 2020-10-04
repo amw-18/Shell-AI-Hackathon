@@ -61,7 +61,7 @@ def proxi_constraint(particle):
     for i in range(particle.shape[0]-1):  
         for j in range(i+1,particle.shape[0]):
             norm = np.linalg.norm(particle[i]-particle[j])
-            proxi_penalty += max(0, 401-norm)  # linear penalty 
+            proxi_penalty += max(0, 400-norm)  # linear penalty 
             
     return proxi_penalty/(particle.shape[0]*400)    # dividing to normalize the value to between 0 and 1
 
@@ -87,6 +87,9 @@ def obj(swarm, kwargs):
         
         proxi_penalty = proxi_constraint(particle)
         
+        if proxi_penalty > 0:
+            print("Didn't work")
+
         return mean_AEP/kwargs['ideal_AEP'] + kwargs['a']*proxi_penalty
 
     obj_vals = np.ndarray((swarm.shape[0],))
@@ -113,7 +116,7 @@ def get_optimizer(n_part, n_turbs, c1, c2, w, init_vals=None, v_clamp=False):
         init_vals = get_init(n_turbs, n_part)
   
     optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-08, ftol_iter=15,
-                            velocity_clamp=v_clamp, options=options, bounds=bounds, init_pos=init_vals)
+                            velocity_clamp=v_clamp, options=options, bounds=bounds, init_pos=init_vals, bh_strategy='my_strategy')
 
     return optimizer
 
@@ -152,3 +155,11 @@ def parse_data_PSO(n_turbs):
             'C_t': C_t, 'ideal_AEP': ideal_AEP, 'a': 100}
 
     return kwargs
+
+
+# def get_smart_arrangement():
+#     ans = np.ndarray((50,2))
+#     ans[:4,:] = np.array[((50,50),(50,3950),(3950,50),(3950,3950))]
+#     n_border_ind = np.random.randint(6, 9)
+#     vals = np.linspace(50, 3950, n_border_ind+2)[1:-1]
+#     ans
