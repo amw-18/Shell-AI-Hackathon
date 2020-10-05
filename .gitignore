@@ -1,3 +1,5 @@
 .vscode
 .vscode/settings.json
 .vscode/launch.json
+Wind_Farm_Evaluator/__pycache__/Vec_modified.cpython-37.pyc
+.gitignore

@@ -211,7 +211,7 @@ def searchSorted(lookup, sample_array):
 
    
 
-def preProcessing(power_curve,n_turbs):
+def preProcessing(power_curve,n_turbs=50):
     """
     -**-THIS FUNCTION SHOULD NOT BE MODIFIED-**-
     
@@ -473,7 +473,8 @@ if __name__ == "__main__":
     
     # Turbine x,y coordinates
     # turb_coords   =  getTurbLoc('Shell_Hackathon Dataset/turbine_loc_test.csv')
-    turb_coords   =  getTurbLoc('Wind Farm Evaluator/my_trials/random_test.csv')
+    # turb_coords   =  getTurbLoc('./EA/data.csv')
+    turb_coords   =  getTurbLoc('/home/ananthu/Workspace/Shell AI Hackathon/Trials/EA_64_trial1.csv')
     # Load the power curve
     power_curve   =  loadPowerCurve('Shell_Hackathon Dataset/power_curve.csv')
     
