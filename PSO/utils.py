@@ -44,13 +44,9 @@ def get_init(n_turbs, n_part=1):
     """
         Function to get initial valid positions for n_part particles
     """
-    func = get_smart_arrangement
     all_particles = np.ndarray((n_part,2*n_turbs))
     for _ in range(n_part):
-        if _ <= n_part:
-            func = get_random_arrangement
-
-        particle = func(n_turbs)
+        particle = get_smart_arrangement(n_turbs)
         all_particles[_,:] = particle.flatten()
 
     return all_particles
@@ -91,8 +87,8 @@ def obj(swarm, kwargs):
         
         proxi_penalty = proxi_constraint(particle)
         
-        if proxi_penalty > 0:
-            print("Didn't work")
+        # if proxi_penalty > 0:
+        #     print("Didn't work")
 
         return mean_AEP/kwargs['ideal_AEP'] #+ kwargs['a']*proxi_penalty
 
@@ -167,21 +163,21 @@ def get_smart_arrangement(n_turbs=50):
     right_bound = [np.array([3950, val]) for val in bord_vals[2][1:-1]]
     bottom_bound = [np.array([val, 50]) for val in bord_vals[3]]
 
-    d = np.random.randint(450, 1350)
-    mn = d
-    mx = 4000-d
-    inbord_vals = [np.linspace(mn, mx, 2+2) for i in range(4)]
-    inleft_bound = [np.array([mn, val]) for val in inbord_vals[0][1:-1]]
-    intop_bound = [np.array([val, mx]) for val in inbord_vals[1]]
-    inright_bound = [np.array([mx, val]) for val in inbord_vals[2][1:-1]]
-    inbottom_bound = [np.array([val, mn]) for val in inbord_vals[3]]
-    # ans = [*left_bound, *right_bound, *top_bound, *bottom_bound]
-    ans = [*left_bound, *right_bound, *top_bound, *bottom_bound, *inleft_bound,
-                 *inright_bound, *intop_bound, *inbottom_bound, np.array([1800, 2000]),
-                 np.array([2200, 2000])]
+    # d = np.random.randint(450, 1350)
+    # mn = d
+    # mx = 4000-d
+    # inbord_vals = [np.linspace(mn, mx, 2+2) for i in range(4)]
+    # inleft_bound = [np.array([mn, val]) for val in inbord_vals[0][1:-1]]
+    # intop_bound = [np.array([val, mx]) for val in inbord_vals[1]]
+    # inright_bound = [np.array([mx, val]) for val in inbord_vals[2][1:-1]]
+    # inbottom_bound = [np.array([val, mn]) for val in inbord_vals[3]]
+    ans = [*left_bound, *right_bound, *top_bound, *bottom_bound]
+    # ans = [*left_bound, *right_bound, *top_bound, *bottom_bound, *inleft_bound,
+    #              *inright_bound, *intop_bound, *inbottom_bound, np.array([1800, 2000]),
+    #              np.array([2200, 2000])]
 
     remaining = n_turbs - len(ans)
-    # ans.extend(get_random_arrangement(remaining, a=450, b=3550))
+    ans.extend(get_random_arrangement(remaining, a=450, b=3550))
     ans = np.array(ans)
     # plt.scatter(ans[:,0],ans[:,1])
     # plt.show()
