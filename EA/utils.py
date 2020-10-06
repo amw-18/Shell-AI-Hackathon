@@ -33,9 +33,9 @@ def get_random_arrangement(n_turbs):
             # turb_list.append(point)
     return turbine_pos
 
-def get_arranged_location():
+def get_arranged_location(data_file):
     ans = []
-    locs = np.array(pd.read_csv("/home/ananthu/Workspace/Shell AI Hackathon/PSO/oswarm3.csv"))
+    locs = np.array(pd.read_csv(data_file))
     for loc in locs:
         ans.append(loc.reshape((50,2)))
     return np.array(ans)
@@ -77,7 +77,7 @@ def evaluateAEP(individual):#, n_turbs, turb_rad, power_curve, wind_inst_freqs, 
         mean_AEP += getAEP(data['turb_rad'], turb_coords, data['power_curve'], wind_inst_freq, data['n_wind_instances'], data['cos_dir'], data['sin_dir'], data['wind_sped_stacked'], data['C_t'])
     mean_AEP /= len(data['wind_inst_freqs'])
     
-    ideal_AEP = 11.5*n_turbs  # 11.297 is the mean score for 1 turbine
+    ideal_AEP = 574.64  # 11.297 is the mean score for 1 turbine
     
     return mean_AEP/ideal_AEP, # First objective should be closest to 1 and second closest to zero
 
@@ -96,17 +96,10 @@ def checkBounds(Min, Max):
                         pt_new,_ = nearest_points(field,pt)
                         pt = Point(pt_new)
                         child[i] = np.array([pt.x, pt.y])
-                        # print(point)
-                        # print(child[i])
                     field = field.difference(pt.buffer(401))                   
             return offspring
         return wrapper
     return decorator
 
-    def clustering(pop):
-
-        for i in range(len(pop)):
-            for j in range(i+1,len(pop)):
-                dist = np.linalg.norm(pop[i] - pop[j])
 
 
