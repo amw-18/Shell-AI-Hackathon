@@ -40,13 +40,18 @@ def get_random_arrangement(n_turbs, a=50, b=3950):
     return rand_ind
 
 
-def get_init(n_turbs, n_part=1):
+def get_init(n_turbs, n_part=1, smart=False):
     """
         Function to get initial valid positions for n_part particles
     """
+    if smart:
+        func = get_smart_arrangement
+    else:
+        func = get_random_arrangement
+
     all_particles = np.ndarray((n_part,2*n_turbs))
     for _ in range(n_part):
-        particle = get_smart_arrangement(n_turbs)
+        particle = func(n_turbs)
         all_particles[_,:] = particle.flatten()
 
     return all_particles
@@ -108,12 +113,12 @@ def get_optimizer(n_part, n_turbs, c1, c2, w, init_vals=None):
     options = {'c1': c1, 'c2': c2, 'w': w}
     bounds = tuple([50*np.ones(2*n_turbs), 3950*np.ones(2*n_turbs)])
     v_clamp = (-800, 800)
-    
+
 
     if init_vals is None:
         init_vals = get_init(n_turbs, n_part)
   
-    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-08, ftol_iter=15,
+    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-08, ftol_iter=50,
                             velocity_clamp=v_clamp, options=options, bounds=bounds, init_pos=init_vals, bh_strategy='my_strategy')
 
     return optimizer
