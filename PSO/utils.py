@@ -118,7 +118,7 @@ def get_optimizer(n_part, n_turbs, c1, c2, w, init_vals=None):
     if init_vals is None:
         init_vals = get_init(n_turbs, n_part)
   
-    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-08, ftol_iter=50,
+    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-08, ftol_iter=15,
                             velocity_clamp=v_clamp, options=options, bounds=bounds, init_pos=init_vals, bh_strategy='my_strategy')
 
     return optimizer
@@ -136,10 +136,12 @@ def parse_data_PSO(n_turbs):
     power_curve   =  loadPowerCurve('./Shell_Hackathon Dataset/power_curve.csv')
 
     # Loading wind data 
-    years = ['07']#,'08','09','13','14','15','17']
+    years = ['09']#,'08','09','13','14','15','17']
     wind_inst_freqs = []
+    all_wind = np.zeros((540,))
     for y in years:
-        wind_inst_freqs.append(binWindResourceData(f'./Shell_Hackathon Dataset/Wind Data/wind_data_20{y}.csv'))
+        all_wind += binWindResourceData(f'Shell_Hackathon Dataset/Wind Data/wind_data_20{y}.csv')
+    wind_inst_freqs.append(all_wind/np.sum(all_wind))
     
     # preprocessing the wind data to avoid repeated calculations
     n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t = preProcessing(power_curve,n_turbs)

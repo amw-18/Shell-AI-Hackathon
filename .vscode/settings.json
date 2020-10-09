@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/home/ananthu/Documents/Applications/miniconda3/bin/python",
+    "python.pythonPath": "C:\\Users\\awals\\anaconda3\\envs\\dsenv\\python.exe",
     "python.linting.enabled": false,
     "python.dataScience.jupyterServerURI": "local"
 }
