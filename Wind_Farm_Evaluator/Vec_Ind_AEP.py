@@ -473,7 +473,7 @@ if __name__ == "__main__":
     # Turbine x,y coordinates
     # turb_coords   =  getTurbLoc('Shell_Hackathon Dataset/turbine_loc_test.csv')
     # turb_coords   =  getTurbLoc('./EA/data.csv')
-    turb_coords   =  getTurbLoc('/home/ananthu/Workspace/Shell AI Hackathon/Trials/opt_swarm_ans33.csv')
+    turb_coords   =  getTurbLoc('Trials/opt_swarm_ans1_9.csv')
     # Load the power curve
     power_curve   =  loadPowerCurve('Shell_Hackathon Dataset/power_curve.csv')
     
@@ -501,8 +501,9 @@ if __name__ == "__main__":
     print(turb_coords[:,1].shape)
     bot = np.zeros_like(AEP)
 
-    col = plt.cm.jet((AEP-AEP.max())/AEP.max())
-    ax.bar3d(turb_coords[:,0],turb_coords[:,1],bot,50,50,AEP, color=col)
-    plt.savefig("AEP_distr.png", dpi = 300, bbox_inches = 'tight')
+    #col = plt.cm.jet((AEP-AEP.max())/AEP.max())
+    ax.bar3d(turb_coords[36:,0],turb_coords[36:,1],bot[36:],50,50,AEP[36:])
+    plt.show()
+    #plt.savefig("AEP_distr.png", dpi = 300, bbox_inches = 'tight')
     # print('Total power produced by the wind farm is: ', "%.12f"%(AEP), 'GWh')
 # 
