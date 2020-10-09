@@ -1,5 +1,8 @@
 {
+<<<<<<< HEAD
     "python.pythonPath": "C:\\Users\\awals\\anaconda3\\envs\\dsenv\\python.exe",
+=======
+>>>>>>> df6ed7084b8a536409bf19571a81cec102ad4eb6
     "python.linting.enabled": false,
-    "python.dataScience.jupyterServerURI": "local"
+    "python.pythonPath": "C:\\Users\\Avinash\\anaconda3\\python.exe"
 }
