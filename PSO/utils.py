@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from Wind_Farm_Evaluator.Vec_modified import *
 
 
-def get_random_arrangement(n_turbs):
+def get_random_arrangement(n_turbs, a=50, b=3950):
     """
     Gets a valid random individual as a numpy array of shape (n_turbs, 2)
     """
@@ -32,7 +32,7 @@ def get_random_arrangement(n_turbs):
     rand_ind = np.full((n_turbs, 2), np.inf)
     count = 0
     while count < n_turbs:
-        turb = get_turb(50, 3950)
+        turb = get_turb(a, b)
         if is_valid(rand_ind, turb):
             rand_ind[count,:] = turb
             count += 1
@@ -40,13 +40,18 @@ def get_random_arrangement(n_turbs):
     return rand_ind
 
 
-def get_init(n_turbs, n_part=1):
+def get_init(n_turbs, n_part=1, smart=False):
     """
         Function to get initial valid positions for n_part particles
     """
+    if smart:
+        func = get_smart_arrangement
+    else:
+        func = get_random_arrangement
+
     all_particles = np.ndarray((n_part,2*n_turbs))
     for _ in range(n_part):
-        particle = get_random_arrangement(n_turbs)
+        particle = func(n_turbs)
         all_particles[_,:] = particle.flatten()
 
     return all_particles
@@ -87,10 +92,10 @@ def obj(swarm, kwargs):
         
         proxi_penalty = proxi_constraint(particle)
         
-        if proxi_penalty > 0:
-            print("Didn't work")
+        # if proxi_penalty > 0:
+        #     print("Didn't work")
 
-        return mean_AEP/kwargs['ideal_AEP'] + kwargs['a']*proxi_penalty
+        return mean_AEP/kwargs['ideal_AEP'] #+ kwargs['a']*proxi_penalty
 
     obj_vals = np.ndarray((swarm.shape[0],))
     for i, particle in enumerate(swarm):
@@ -99,7 +104,7 @@ def obj(swarm, kwargs):
     return obj_vals
 
 
-def get_optimizer(n_part, n_turbs, c1, c2, w, init_vals=None, v_clamp=False):
+def get_optimizer(n_part, n_turbs, c1, c2, w, init_vals=None):
     """
         Get optimizer with given values
         v_clamp: (False) setting True will set clamps to (-800, 800)
@@ -107,15 +112,13 @@ def get_optimizer(n_part, n_turbs, c1, c2, w, init_vals=None, v_clamp=False):
     """
     options = {'c1': c1, 'c2': c2, 'w': w}
     bounds = tuple([50*np.ones(2*n_turbs), 3950*np.ones(2*n_turbs)])
-    if v_clamp:
-        v_clamp = (-800, 800)
-    else:
-        v_clamp = (-np.inf, np.inf)
+    v_clamp = (-800, 800)
+
 
     if init_vals is None:
         init_vals = get_init(n_turbs, n_part)
   
-    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-08, ftol_iter=15,
+    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*n_turbs, ftol=1e-08, ftol_iter=50,
                             velocity_clamp=v_clamp, options=options, bounds=bounds, init_pos=init_vals, bh_strategy='my_strategy')
 
     return optimizer
@@ -157,9 +160,36 @@ def parse_data_PSO(n_turbs):
     return kwargs
 
 
-# def get_smart_arrangement():
-#     ans = np.ndarray((50,2))
-#     ans[:4,:] = np.array[((50,50),(50,3950),(3950,50),(3950,3950))]
-#     n_border_ind = np.random.randint(6, 9)
-#     vals = np.linspace(50, 3950, n_border_ind+2)[1:-1]
-#     ans
+def get_smart_arrangement(n_turbs=50):
+    n_bord = np.random.randint(8, 9, 4)
+    bord_vals = [np.linspace(50, 3950, n_bord[i]+2) for i in range(4)]
+    left_bound = [np.array([50, val]) for val in bord_vals[0][1:-1]]
+    top_bound = [np.array([val, 3950]) for val in bord_vals[1]]
+    right_bound = [np.array([3950, val]) for val in bord_vals[2][1:-1]]
+    bottom_bound = [np.array([val, 50]) for val in bord_vals[3]]
+
+    # d = np.random.randint(450, 1350)
+    # mn = d
+    # mx = 4000-d
+    # inbord_vals = [np.linspace(mn, mx, 2+2) for i in range(4)]
+    # inleft_bound = [np.array([mn, val]) for val in inbord_vals[0][1:-1]]
+    # intop_bound = [np.array([val, mx]) for val in inbord_vals[1]]
+    # inright_bound = [np.array([mx, val]) for val in inbord_vals[2][1:-1]]
+    # inbottom_bound = [np.array([val, mn]) for val in inbord_vals[3]]
+    ans = [*left_bound, *right_bound, *top_bound, *bottom_bound]
+    # ans = [*left_bound, *right_bound, *top_bound, *bottom_bound, *inleft_bound,
+    #              *inright_bound, *intop_bound, *inbottom_bound, np.array([1800, 2000]),
+    #              np.array([2200, 2000])]
+
+    remaining = n_turbs - len(ans)
+    ans.extend(get_random_arrangement(remaining, a=450, b=3550))
+    ans = np.array(ans)
+    # plt.scatter(ans[:,0],ans[:,1])
+    # plt.show()
+    return ans
+
+
+# if __name__ == '__main__':
+#     arr = get_smart_arrangement().reshape((50,2))
+#     plt.scatter(arr[:,0],arr[:,1])
+#     plt.show()

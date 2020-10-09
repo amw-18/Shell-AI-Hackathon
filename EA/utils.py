@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import random
 import shapely
 from shapely.geometry import Point, Polygon, LineString, GeometryCollection
@@ -31,6 +32,13 @@ def get_random_arrangement(n_turbs):
             count += 1
             # turb_list.append(point)
     return turbine_pos
+
+def get_arranged_location(data_file):
+    ans = []
+    locs = np.array(pd.read_csv(data_file))
+    for loc in locs:
+        ans.append(loc.reshape((50,2)))
+    return np.array(ans)
 
 
 def parse_data(n_turbs):
@@ -69,33 +77,9 @@ def evaluateAEP(individual):#, n_turbs, turb_rad, power_curve, wind_inst_freqs, 
         mean_AEP += getAEP(data['turb_rad'], turb_coords, data['power_curve'], wind_inst_freq, data['n_wind_instances'], data['cos_dir'], data['sin_dir'], data['wind_sped_stacked'], data['C_t'])
     mean_AEP /= len(data['wind_inst_freqs'])
     
-    ideal_AEP = 11.297*n_turbs  # 11.297 is the mean score for 1 turbine
+    ideal_AEP = 574.64  # 11.297 is the mean score for 1 turbine
     
     return mean_AEP/ideal_AEP, # First objective should be closest to 1 and second closest to zero
-
-def peri_constraint(turb_coords):
-    peri_val = 0
-    for turb in turb_coords:
-        for val in turb:
-            if val < 50:
-                peri_val += (50 - val)
-            elif val > 3950:
-                peri_val += (val - 3950)
-                
-    return peri_val
-
-def proxi_constraint(turb_coords):
-    """
-        Function to penalize if proximity contraint is violated.
-        turb_coords is a 2d numpy array with N (xi,yi) elements.
-    """
-    proxi_val = 0
-    for i in range(turb_coords.shape[0]-1):
-        for j in range(i+1,turb_coords.shape[0]-1):
-            norm = np.linalg.norm(turb_coords[i]-turb_coords[j])
-            proxi_val += max(0,400 - norm)
-
-    return proxi_val
 
 
 def checkBounds(Min, Max):
@@ -112,9 +96,10 @@ def checkBounds(Min, Max):
                         pt_new,_ = nearest_points(field,pt)
                         pt = Point(pt_new)
                         child[i] = np.array([pt.x, pt.y])
-                        # print(point)
-                        # print(child[i])
-                    field = field.difference(pt.buffer(400))                   
+                    field = field.difference(pt.buffer(401))                   
             return offspring
         return wrapper
     return decorator
+
+
+

@@ -68,6 +68,8 @@ OPTIMIZATION USAGE
 import numpy  as np
 import pandas as pd                     
 from   math   import radians as DegToRad       # Degrees to radians Conversion
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 from shapely.geometry import Point             # Imported for constraint checking
 from shapely.geometry.polygon import Polygon
@@ -245,7 +247,7 @@ def preProcessing(power_curve,n_turbs=50):
     slices_drct   = np.roll(np.arange(10, 361, 10, dtype=np.float32), 1)
     ## slices_drct   = [360, 10.0, 20.0.......340, 350]
     n_slices_drct = slices_drct.shape[0]
-    
+    # print(power_curve.shape)
     # speed 'slices'
     slices_sped   = [0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 
                         18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0]
@@ -279,7 +281,6 @@ def preProcessing(power_curve,n_turbs=50):
     
     # create copies of n_wind_instances wind speeds from wind_instances
     wind_sped_stacked = np.column_stack([wind_instances[:,0]]*n_turbs)
-   
     # Pre-prepare matrix with stored thrust coeffecient C_t values for 
     # n_wind_instances shape (n_wind_instances, n_turbs, n_turbs). 
     # Value changing only along axis=0. C_t, thrust coeff. values for all 
@@ -366,28 +367,26 @@ def getAEP(turb_rad, turb_coords, power_curve, wind_inst_freq,
     sped_deficit = (1-np.sqrt(1-C_t))*((turb_rad/(turb_rad + 0.05*x_dist))**2) 
     sped_deficit[((x_dist <= 0) | ((x_dist > 0) & (y_dist > (turb_rad + 0.05*x_dist))))] = 0.0
     
-    
     # Calculate Total speed deficit from all upstream turbs, using sqrt of sum of sqrs
     sped_deficit_eff  = np.sqrt(np.sum(np.square(sped_deficit), axis = 2))
-
+    
     
     # Element wise multiply the above with (1- sped_deficit_eff) to get
     # effective windspeed due to the happening wake
     wind_sped_eff     = wind_sped_stacked*(1.0-sped_deficit_eff)
-
     
     # Estimate power from power_curve look up for wind_sped_eff
     indices = searchSorted(power_curve[:,0], wind_sped_eff.ravel())
     power   = power_curve[indices,2]
     power   = power.reshape(n_wind_instances,n_turbs)
-    
+    print(power.shape)
     # Farm power for single wind instance 
-    power   = np.sum(power, axis=1)
-    
+    # power   = np.sum(power, axis=1)
+    # print(wind_inst_freq.shape)
     # multiply the respective values with the wind instance probabilities 
     # year_hours = 8760.0
-    AEP = 8760.0*np.sum(power*wind_inst_freq)
-    
+    AEP = 8760.0*np.sum(power*wind_inst_freq.reshape(540,1),axis=0)
+    # print(AEP)    
     # Convert MWh to GWh
     AEP = AEP/1e3
     
@@ -474,7 +473,7 @@ if __name__ == "__main__":
     # Turbine x,y coordinates
     # turb_coords   =  getTurbLoc('Shell_Hackathon Dataset/turbine_loc_test.csv')
     # turb_coords   =  getTurbLoc('./EA/data.csv')
-    turb_coords   =  getTurbLoc('/home/ananthu/Workspace/Shell AI Hackathon/Trials/EA_64_trial1.csv')
+    turb_coords   =  getTurbLoc('/home/ananthu/Workspace/Shell AI Hackathon/Trials/opt_swarm_ans33.csv')
     # Load the power curve
     power_curve   =  loadPowerCurve('Shell_Hackathon Dataset/power_curve.csv')
     
@@ -496,4 +495,14 @@ if __name__ == "__main__":
     print('Calculating AEP......')
     AEP = getAEP(turb_rad, turb_coords, power_curve, wind_inst_freq, 
                   n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t) 
-    print('Total power produced by the wind farm is: ', "%.12f"%(AEP), 'GWh')
+    # print(turb_coords)
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+    print(turb_coords[:,1].shape)
+    bot = np.zeros_like(AEP)
+
+    col = plt.cm.jet((AEP-AEP.max())/AEP.max())
+    ax.bar3d(turb_coords[:,0],turb_coords[:,1],bot,50,50,AEP, color=col)
+    plt.savefig("AEP_distr.png", dpi = 300, bbox_inches = 'tight')
+    # print('Total power produced by the wind farm is: ', "%.12f"%(AEP), 'GWh')
+# 
