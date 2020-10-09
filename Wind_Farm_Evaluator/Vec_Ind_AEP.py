@@ -500,7 +500,9 @@ if __name__ == "__main__":
     ax = plt.axes(projection='3d')
     print(turb_coords[:,1].shape)
     bot = np.zeros_like(AEP)
-    ax.bar3d(turb_coords[:,0],turb_coords[:,1],bot,100,100,AEP)
+
+    col = plt.cm.jet((AEP-AEP.max())/AEP.max())
+    ax.bar3d(turb_coords[:,0],turb_coords[:,1],bot,50,50,AEP, color=col)
     plt.savefig("AEP_distr.png", dpi = 300, bbox_inches = 'tight')
     # print('Total power produced by the wind farm is: ', "%.12f"%(AEP), 'GWh')
 # 
