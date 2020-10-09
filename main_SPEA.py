@@ -3,7 +3,7 @@ import numpy as np
 import EA.deap_spea as ea
 
 # Number of Turbines to placed in the windfarm. 
-N_TURB = 500
+N_TURB = 50
 
 # Total Number of Population to be used for the Evolution
 N_POP = 64
