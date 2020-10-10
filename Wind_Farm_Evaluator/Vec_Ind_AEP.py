@@ -473,13 +473,13 @@ if __name__ == "__main__":
     # Turbine x,y coordinates
     # turb_coords   =  getTurbLoc('Shell_Hackathon Dataset/turbine_loc_test.csv')
     # turb_coords   =  getTurbLoc('./EA/data.csv')
-    turb_coords   =  getTurbLoc('Wind_Farm_Evaluator/opt_swarm_ans1_9.csv')
+    turb_coords   =  getTurbLoc('Wind_Farm_Evaluator/opt_swarm_ans1_9 - vertest.csv')
     # Load the power curve
     power_curve   =  loadPowerCurve('Shell_Hackathon Dataset/power_curve.csv')
     
     # Pass wind data csv file location to function binWindResourceData.
     # Retrieve probabilities of wind instance occurence.
-    wind_inst_freq =  binWindResourceData('Shell_Hackathon Dataset/Wind Data/wind_data_2007.csv')   
+    wind_inst_freq =  binWindResourceData('Shell_Hackathon Dataset/Wind Data/wind_data_2009.csv')   
     
     # Doing preprocessing to avoid the same repeating calculations. Record 
     # the required data for calculations. Do that once. Data are set up (shaped)
@@ -502,8 +502,9 @@ if __name__ == "__main__":
     bot = np.zeros_like(AEP)
     plt.scatter(turb_coords[:,0],turb_coords[:,1])
     for i in range(len(AEP)):
-        plt.text(turb_coords[i,0],turb_coords[i,1],str("{}, ({})".format(np.round(AEP[i]-10,2),i+2)))
-
+        plt.text(turb_coords[i,0],turb_coords[i,1],str("{}, ({})".format(np.round(AEP[i]-9,2),i+2)))
+    plt.xlim(0,4000)
+    plt.ylim(0,4000)
     #col = plt.cm.jet((AEP-AEP.max())/AEP.max())
     #ax.bar3d(turb_coords[:,0],turb_coords[:,1],bot[:],50,50,(AEP[:]-10))
     plt.show()
