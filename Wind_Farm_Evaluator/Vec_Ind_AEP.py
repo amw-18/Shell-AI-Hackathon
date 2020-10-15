@@ -473,7 +473,7 @@ if __name__ == "__main__":
     # Turbine x,y coordinates
     # turb_coords   =  getTurbLoc('Shell_Hackathon Dataset/turbine_loc_test.csv')
     # turb_coords   =  getTurbLoc('./EA/data.csv')
-    turb_coords   =  getTurbLoc('Wind_Farm_Evaluator/opt_swarm_ans1_9 - vertest.csv')
+    turb_coords   =  getTurbLoc(r'Wind_Farm_Evaluator/opt_swarm_ans1_9 - vertest.csv')
     # Load the power curve
     power_curve   =  loadPowerCurve('Shell_Hackathon Dataset/power_curve.csv')
     
@@ -507,7 +507,7 @@ if __name__ == "__main__":
     plt.ylim(0,4000)
     #col = plt.cm.jet((AEP-AEP.max())/AEP.max())
     #ax.bar3d(turb_coords[:,0],turb_coords[:,1],bot[:],50,50,(AEP[:]-10))
+    print('Total power produced by the wind farm is: ', "%.12f"%(np.sum(AEP)), 'GWh')
     plt.show()
     #plt.savefig("AEP_distr.png", dpi = 300, bbox_inches = 'tight')
-    print('Total power produced by the wind farm is: ', "%.12f"%(np.sum(AEP)), 'GWh')
 # 
