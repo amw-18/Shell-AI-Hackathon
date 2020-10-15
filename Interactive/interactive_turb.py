@@ -51,7 +51,7 @@ class PolygonInteractor(object):
     showverts = True
     epsilon = 25  # max pixel distance to count as a vertex hit
 
-    def __init__(self, ax, poly):
+    def __init__(self, ax, poly,AEP):
         if poly.figure is None:
             raise RuntimeError('You must first add the polygon to a figure '
                                'or canvas before defining the interactor')
@@ -64,6 +64,9 @@ class PolygonInteractor(object):
                            marker='o', markerfacecolor='r', markersize=self.epsilon,
                            animated=True)
         self.ax.add_line(self.line)
+        self.AEP = AEP
+        self.text = ax.text(3000,-400,'AEP = {}'.format(self.AEP), bbox={'facecolor':'w', 'alpha':0.5, 'pad':5}, ha="center")
+
 
         self.cid = self.poly.add_callback(self.poly_changed)
         self._ind = None  # the active vert
@@ -79,6 +82,7 @@ class PolygonInteractor(object):
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
         self.ax.draw_artist(self.poly)
         self.ax.draw_artist(self.line)
+        self.ax.draw_artist(self.text)
         # do not need to blit here, this will fire before the screen is
         # updated
 
@@ -117,13 +121,18 @@ class PolygonInteractor(object):
 
     def button_release_callback(self, event):
         'whenever a mouse button is released'
-        global AEP
         if not self.showverts:
             return
         if event.button != 1:
             return
         if self._ind is not None:
-            AEP = calcAEP(np.asarray(self.poly.xy))
+            self.AEP = calcAEP(np.asarray(self.poly.xy))
+            self.text.set_text(str(self.AEP))
+            self.canvas.restore_region(self.background)
+            self.ax.draw_artist(self.poly)
+            self.ax.draw_artist(self.line)
+            self.ax.draw_artist(self.text)
+            self.canvas.blit(self.ax.bbox)
             # for i in range(len(AEP)):
             #     self.ax.text(turb_coords[i,0],turb_coords[i,1],str("{}, ({})".format(np.round(AEP[i]-9,2),i+2)))
         self._ind = None
@@ -201,12 +210,12 @@ def calcAEP(turb_coords):
                      }
     turb_diam      =  turb_specs['Dia (m)']
     turb_rad       =  turb_diam/2 
-    
+    n_turbs        =   turb_coords.shape[0]  
     power_curve   =  loadPowerCurve('Shell_Hackathon Dataset/power_curve.csv')
 
     wind_inst_freq =  binWindResourceData('Shell_Hackathon Dataset/Wind Data/wind_data_2009.csv')   
 
-    n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t = preProcessing(power_curve)
+    n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t = preProcessing(power_curve,n_turbs)
 
     checkConstraints(turb_coords, turb_diam)
     AEP = getAEP(turb_rad, turb_coords, power_curve, wind_inst_freq, 
@@ -221,14 +230,15 @@ if __name__ == '__main__':
 
     turb_loc = np.array(pd.read_csv('Interactive/data.csv'))
     # print(turb_loc)
-    AEP = calcAEP(turb_loc)
+    iniAEP = calcAEP(turb_loc)
     poly = Polygon(turb_loc,alpha=0 ,animated=True,closed=False)
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(6,6))
     ax.add_patch(poly)
-    p = PolygonInteractor(ax, poly)
+    p = PolygonInteractor(ax, poly,iniAEP)
 
     # text = ax.text(3000,4050,'AEP = {}'.format(AEP), bbox={'facecolor':'w', 'alpha':0.5, 'pad':0.5}, ha="center")
-    ax.set_title('AEP = {}'.format(AEP))
+    ax.set_aspect(1)
+    ax.set_title('iniAEP = {}'.format(iniAEP))
     ax.set_xlim((0, 4000))
     ax.set_ylim((0, 4000))
     plt.show()
