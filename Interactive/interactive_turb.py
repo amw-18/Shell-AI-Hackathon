@@ -219,7 +219,7 @@ if __name__ == '__main__':
     from matplotlib.patches import Polygon
     import pandas as pd
 
-    turb_loc = np.array(pd.read_csv('data.csv'))
+    turb_loc = np.array(pd.read_csv('Interactive/data.csv'))
     # print(turb_loc)
     AEP = calcAEP(turb_loc)
     poly = Polygon(turb_loc,alpha=0 ,animated=True,closed=False)
