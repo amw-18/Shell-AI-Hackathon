@@ -1,4 +1,3 @@
 {
-    "python.linting.enabled": false,
-    "python.pythonPath": "/home/ananthu/Documents/Applications/miniconda3/bin/python"
+    "python.linting.enabled": false
 }
