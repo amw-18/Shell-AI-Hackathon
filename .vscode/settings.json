@@ -1,4 +1,10 @@
 {
+<<<<<<< HEAD
     "python.linting.enabled": false,
     "python.pythonPath": "/home/ananthu/Documents/Applications/miniconda3/bin/python"
+=======
+    "python.pythonPath": "C:\\Users\\awals\\anaconda3\\envs\\dsenv\\python.exe",
+    "python.linting.enabled": false,
+    // "python.pythonPath": "C:\\Users\\Avinash\\anaconda3\\python.exe"
+>>>>>>> 837a69172a5ea47f75d91cbfcbb17782f9280f4c
 }
