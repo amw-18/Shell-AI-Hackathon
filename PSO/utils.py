@@ -149,8 +149,8 @@ def parse_data_PSO(n_turbs, years, ignore=None):
 
 
 def get_smart_arrangement(n_turbs=50):
-    n_bord = np.random.randint(8, 9, 4)
-    # n_bord = [7, 8, 8, 7]
+    # n_bord = np.random.randint(8, 9, 4)
+    n_bord = [8, 8, 8, 8]
     bord_vals = [np.linspace(50, 3950, n_bord[i]+2) for i in range(4)]
     left_bound = [np.array([50, val]) for val in bord_vals[0][1:-1]]
     top_bound = [np.array([val, 3950]) for val in bord_vals[1]]

@@ -49,7 +49,7 @@ class PolygonInteractor(object):
     """
 
     showverts = True
-    epsilon = 25  # max pixel distance to count as a vertex hit
+    epsilon = 32  # max pixel distance to count as a vertex hit
 
     def __init__(self, ax, poly):
         if poly.figure is None:
@@ -219,16 +219,17 @@ if __name__ == '__main__':
     from matplotlib.patches import Polygon
     import pandas as pd
 
-    turb_loc = np.array(pd.read_csv('data.csv'))
+    turb_loc = np.array(pd.read_csv('Interactive/data.csv'))
     # print(turb_loc)
     AEP = calcAEP(turb_loc)
     poly = Polygon(turb_loc,alpha=0 ,animated=True,closed=False)
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(6, 6))
+    ax.set_aspect(1)
     ax.add_patch(poly)
     p = PolygonInteractor(ax, poly)
 
     # text = ax.text(3000,4050,'AEP = {}'.format(AEP), bbox={'facecolor':'w', 'alpha':0.5, 'pad':0.5}, ha="center")
     ax.set_title('AEP = {}'.format(AEP))
-    ax.set_xlim((0, 4000))
-    ax.set_ylim((0, 4000))
+    ax.set_xlim((-2000, 6000))
+    ax.set_ylim((-2000, 6000))
     plt.show()
