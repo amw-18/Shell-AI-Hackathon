@@ -229,7 +229,7 @@ if __name__ == '__main__':
     from matplotlib.patches import Polygon
     import pandas as pd
 
-    turb_loc = np.array(pd.read_csv('Interactive/data.csv'))
+    turb_loc = np.array(pd.read_csv(r'C:\Users\awals\Downloads\Shell AI Hackathon\PSO\brute6/50_1.csv'))
     # print(turb_loc)
     iniAEP = calcAEP(turb_loc)
     poly = Polygon(turb_loc,alpha=0 ,animated=True,closed=False)

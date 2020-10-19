@@ -473,7 +473,7 @@ if __name__ == "__main__":
     # Turbine x,y coordinates
     # turb_coords   =  getTurbLoc('Shell_Hackathon Dataset/turbine_loc_test.csv')
     # turb_coords   =  getTurbLoc('./EA/data.csv')
-    turb_coords   =  getTurbLoc(r'Wind_Farm_Evaluator/opt_swarm_ans1_9 - vertest.csv')
+    turb_coords   =  getTurbLoc(r'C:\Users\awals\Downloads\Shell AI Hackathon\PSO\brute6/50_1.csv')
     # Load the power curve
     power_curve   =  loadPowerCurve('Shell_Hackathon Dataset/power_curve.csv')
     
@@ -491,7 +491,7 @@ if __name__ == "__main__":
     # this is just a check and the function does not quantifies the amount by 
     # which the constraints are violated if any. 
     checkConstraints(turb_coords, turb_diam)
-    
+     
     print('Calculating AEP......')
     AEP = getAEP(turb_rad, turb_coords, power_curve, wind_inst_freq, 
                   n_wind_instances, cos_dir, sin_dir, wind_sped_stacked, C_t) 

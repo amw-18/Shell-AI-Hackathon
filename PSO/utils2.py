@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from Wind_Farm_Evaluator.Vec_modified import *
 
 
-def get_random_arrangement(n_turbs, a=50, b=3550):
+def get_random_arrangement(n_turbs, a=450, b=3550):
     """
     Gets a valid random individual as a numpy array of shape (n_turbs, 2)
     """
@@ -78,7 +78,7 @@ def obj(swarm, kwargs):
             a : weight to use for proxi_penalty
         """
         particle = np.append(kwargs['bord_turbs'].flatten(), curr_particle)
-        particle = particle.reshape((kwargs['n_turbs'], 2))
+        particle = particle.reshape((kwargs["n_turbs"], 2))
         aggr_AEP = 0
         for wind_inst_f in kwargs['wind_inst_freqs']:
             aggr_AEP += getAEP(kwargs['turb_rad'], particle, kwargs['power_curve'], wind_inst_f,
@@ -99,17 +99,17 @@ def obj(swarm, kwargs):
     return obj_vals
 
 
-def get_optimizer(n_part, c1, c2, w, init_vals):
+def get_optimizer(n_part, c1, c2, w, n_turbs, init_vals):
     """
-        Get optimizer with given values !!!(31 turbines only)!!!
+        Get optimizer with given values 
         v_clamp: (False) setting True will set clamps to (-800, 800)
         init_vals: (None - 'random arrangement') starting points
     """
+    in_turbs = n_turbs - 49
     options = {'c1': c1, 'c2': c2, 'w': w}
-    bounds = tuple([50*np.ones(2*31), 3550*np.ones(2*31)])
-    v_clamp = (-800, 800)
+    bounds = tuple([450*np.ones(2*in_turbs), 3550*np.ones(2*in_turbs)])
   
-    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*31, ftol=1e-08, ftol_iter=15,
+    optimizer = ps.single.global_best.GlobalBestPSO(n_particles=n_part, dimensions=2*in_turbs, ftol=1e-08, ftol_iter=15,
                              options=options, bounds=bounds, init_pos=init_vals, bh_strategy='my_strategy')
 
     return optimizer
@@ -163,15 +163,15 @@ def parse_data_PSO(n_turbs, years, ignore=None):
 
 
 def get_border_arrangement():
-    n_bord = [8]*4
-    bord_vals = [np.linspace(50, 3950, n_bord[i]+2) for i in range(4)]
-    left_bound = [np.array([50, val]) for val in bord_vals[0][1:-1]]
-    top_bound = [np.array([val, 3950]) for val in bord_vals[1]]
-    right_bound = [np.array([3950, val]) for val in bord_vals[2][:-1]]
-    bottom_bound = [np.array([val, 50]) for val in bord_vals[3]]
-    ans = [*top_bound, *right_bound]#, *left_bound, *bottom_bound]
-    ans = np.array(ans)
-    # ans = np.array(pd.read_csv('C:/Users/awals/Downloads/Shell AI Hackathon/Trials/opt_swarm_ans1_9.csv'))[:19,:]
+    # n_bord = [8]*4
+    # bord_vals = [np.linspace(50, 3950, n_bord[i]+2) for i in range(4)]
+    # left_bound = [np.array([50, val]) for val in bord_vals[0][1:-1]]
+    # top_bound = [np.array([val, 3950]) for val in bord_vals[1]]
+    # right_bound = [np.array([3950, val]) for val in bord_vals[2][1:-1]]
+    # bottom_bound = [np.array([val, 50]) for val in bord_vals[3]]
+    # ans = [*top_bound, *right_bound, *left_bound, *bottom_bound]
+    # ans = np.array(ans)
+    ans = np.array(pd.read_csv('C:/Users/awals/Downloads/Shell AI Hackathon/PSO/FINAL_BRUTE.csv'))[:49,:]
     # plt.scatter(ans[:,0],ans[:,1])
     # plt.show()
     return ans
