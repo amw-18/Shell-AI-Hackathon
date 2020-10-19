@@ -56,6 +56,21 @@ def get_init(n_turbs, n_part=1, smart=False):
 
     return all_particles
 
+def get_extra_turb(init_pos):
+    ans = [*init_pos]
+    ans.append(np.random.uniform(450, 3550, 2))
+    ans = np.array(ans)
+
+    return ans
+
+def get_particles(n_turbs, n_part, determined):
+    all_particles = np.ndarray((n_part,2*n_turbs))
+    for _ in range(n_part):
+        particle = get_extra_turb(determined)
+        all_particles[_,:] = particle.flatten()
+
+    return all_particles
+
 
 def obj(swarm, kwargs):
     """
@@ -149,7 +164,7 @@ def parse_data_PSO(n_turbs, years, ignore=None):
 
 
 def get_smart_arrangement(n_turbs=50):
-    # n_bord = np.random.randint(8, 9, 4)
+    n_bord = np.random.randint(8, 9, 4)
     n_bord = [8, 8, 8, 8]
     bord_vals = [np.linspace(50, 3950, n_bord[i]+2) for i in range(4)]
     left_bound = [np.array([50, val]) for val in bord_vals[0][1:-1]]
@@ -162,8 +177,7 @@ def get_smart_arrangement(n_turbs=50):
     remaining = n_turbs - len(ans)
     ans.extend(get_random_arrangement(remaining, a=450, b=3550))
     ans = np.array(ans)
-    # ans[:36,:] = np.array(pd.read_csv('C:/Users/awals/Downloads/Shell AI Hackathon/Trials/opt_swarm_ans1_9.csv'))[:36,:]
-
+    ans[:49,:] = np.array(pd.read_csv('C:/Users/awals/Downloads/Shell AI Hackathon/PSO/brute6/49.csv'))[:49,:]
     # plt.scatter(ans[:,0],ans[:,1])
     # plt.show()
     return ans

@@ -5,26 +5,33 @@ if __name__ == '__main__':
     n_turbs = 50
 
     # swarm size
-    n_part = 16
+    n_part = 40
 
 
     # getting initial swarm
     oswarm = get_init(n_turbs, n_part=n_part, smart=True)
-    # oswarm = np.array(pd.read_csv("PSO/opt_swarm_smart.csv"))[:n_part,:]
+    # oswarm[0,:] = np.array(pd.read_csv("Trials/trial2.csv")).flatten()
+    # oswarm[1,:] = np.array(pd.read_csv("PSO/FINAL_BRUTE.csv")).flatten()
+    # oswarm[2,:] = np.array(pd.read_csv("PSO/brute/50.csv")).flatten()
+    # oswarm[3,:] = np.array(pd.read_csv("PSO/brute2/1_50.csv")).flatten()
+    # oswarm[4,:] = np.array(pd.read_csv("PSO/brute2/2_50.csv")).flatten()
+    # oswarm[5,:] = np.array(pd.read_csv("PSO/brute3/50.csv")).flatten()
+    # oswarm[6,:] = np.array(pd.read_csv("PSO/brute4/50.csv")).flatten()
+    # oswarm[7,:] = np.array(pd.read_csv("PSO/brute5/50.csv")).flatten()
 
     # getting values for aep calculation
-    years = ['09']#,'08','09','13','14','15','17']
-    # years = ['08','09','13','14','15','17']
+    years = ['07','08','09','13','14','15','17']
+    # years = ['17']
     kwargs = parse_data_PSO(n_turbs, years)
 
     # pso global optimizer parameters
-    k = 100   # damping factor
-    w = 0.5    # inertia
+    k = 1   # damping factor
+    w = 0.71    # inertia
     c1 = 0.5*(w + 1)**2   # cognitive
     c2 = c1   # social
 
     # # pso global optimizer parameters
-    # c1 = 0.3   # cognitive  0.35   0.1
+    # c1 = 0.4   # cognitive  0.35   0.1
     # c2 = 3  # social     3.05   2.3
     # w = 0.004  # inertia
     # k = 4    #  1.3    1.8
@@ -35,15 +42,15 @@ if __name__ == '__main__':
         # creating the optimizer
         optimizer = get_optimizer(n_part, n_turbs, c1, c2, w, init_vals=oswarm)
         # optimizing
-        cost, pos = optimizer.optimize(obj, iters=1000, n_processes=4, verbose=True, damping=k, kwargs=kwargs)
+        cost, pos = optimizer.optimize(obj, iters=500, n_processes=12, verbose=True, damping=k, kwargs=kwargs)
         print(-np.mean(obj(optimizer.swarm.position, kwargs)))
         oswarm = optimizer.swarm.position
         oswarm[np.random.randint(n_part),:] = pos
         print('current AEP is ', -kwargs['ideal_AEP']*cost)
         print('ideal AEP is', kwargs['ideal_AEP'])
         plot_cost_history(optimizer.cost_history, ax=ax)
-        w = 0.03
-        c1 = 0.3
+        w = 0.004
+        c1 = 0.4
         c2 = 3
 
     # visualizing the optimized answer
@@ -52,7 +59,7 @@ if __name__ == '__main__':
     # ax2 = plt.gca()
     # ax2.set_aspect(1)
     # ax2.scatter(pos[:,0],pos[:,1], s=900)
-    plt.show()
+    # plt.show()
 
 
 
@@ -103,3 +110,30 @@ if __name__ == '__main__':
 #     opt_swarm.to_csv("PSO/oswarms/re_oswarm_0.csv", index=None, columns=None)
 
 #     plt.show()
+
+
+
+# current AEP is  421.41265071365495
+
+# current AEP is  431.7379718736261
+
+# current AEP is  441.72832466711196
+
+# current AEP is  451.8058181163781
+
+# current AEP is  461.9493505340189
+
+# current AEP is  471.8984809066559
+
+# current AEP is  481.8292400676834
+
+# current AEP is  491.7446518025497
+
+# current AEP is  501.62007486917264
+
+# current AEP is  511.2628496576083
+
+# current AEP is  521.0449146304829
+
+# current AEP is  530.7669859084266
+
