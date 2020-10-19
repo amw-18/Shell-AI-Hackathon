@@ -128,11 +128,12 @@ class PolygonInteractor(object):
         if self._ind is not None:
             self.AEP = calcAEP(np.asarray(self.poly.xy))
             self.text.set_text(str(self.AEP))
-            self.canvas.restore_region(self.background)
-            self.ax.draw_artist(self.poly)
-            self.ax.draw_artist(self.line)
-            self.ax.draw_artist(self.text)
-            self.canvas.blit(self.ax.bbox)
+            # print(self.text)
+            # self.canvas.restore_region(self.textbg)
+            # self.ax.draw_artist(self.poly)
+            # self.ax.draw_artist(self.line)
+            # self.ax.draw_artist(self.text)
+            # self.canvas.blit(self.text.get_window_extent())
             # for i in range(len(AEP)):
             #     self.ax.text(turb_coords[i,0],turb_coords[i,1],str("{}, ({})".format(np.round(AEP[i]-9,2),i+2)))
         self._ind = None
