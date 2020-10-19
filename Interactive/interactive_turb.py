@@ -49,7 +49,7 @@ class PolygonInteractor(object):
     """
 
     showverts = True
-    epsilon = 25  # max pixel distance to count as a vertex hit
+    epsilon = 32  # max pixel distance to count as a vertex hit
 
     def __init__(self, ax, poly,AEP):
         if poly.figure is None:
