@@ -105,7 +105,7 @@ def get_optimizer(n_part, c1, c2, w, n_turbs, init_vals):
         v_clamp: (False) setting True will set clamps to (-800, 800)
         init_vals: (None - 'random arrangement') starting points
     """
-    in_turbs = n_turbs - 49
+    in_turbs = 1
     options = {'c1': c1, 'c2': c2, 'w': w}
     bounds = tuple([450*np.ones(2*in_turbs), 3550*np.ones(2*in_turbs)])
   
@@ -171,7 +171,7 @@ def get_border_arrangement():
     # bottom_bound = [np.array([val, 50]) for val in bord_vals[3]]
     # ans = [*top_bound, *right_bound, *left_bound, *bottom_bound]
     # ans = np.array(ans)
-    ans = np.array(pd.read_csv('C:/Users/awals/Downloads/Shell AI Hackathon/PSO/FINAL_BRUTE.csv'))[:49,:]
+    ans = np.array(pd.read_csv('C:/Users/awals/Downloads/Shell AI Hackathon/PSO/brute7/43.csv'))
     # plt.scatter(ans[:,0],ans[:,1])
     # plt.show()
     return ans

@@ -2,7 +2,7 @@ from PSO.utils import *
 
 if __name__ == '__main__':
     # no of turbines
-    n_turbs = 50
+    n_turbs = 46
 
     # swarm size
     n_part = 40
@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     # pso global optimizer parameters
     k = 1   # damping factor
-    w = 0.71    # inertia
+    w = 0.7296    # inertia
     c1 = 0.5*(w + 1)**2   # cognitive
     c2 = c1   # social
 
@@ -42,7 +42,7 @@ if __name__ == '__main__':
         # creating the optimizer
         optimizer = get_optimizer(n_part, n_turbs, c1, c2, w, init_vals=oswarm)
         # optimizing
-        cost, pos = optimizer.optimize(obj, iters=500, n_processes=12, verbose=True, damping=k, kwargs=kwargs)
+        cost, pos = optimizer.optimize(obj, iters=1000, n_processes=12, verbose=True, damping=k, kwargs=kwargs)
         print(-np.mean(obj(optimizer.swarm.position, kwargs)))
         oswarm = optimizer.swarm.position
         oswarm[np.random.randint(n_part),:] = pos
@@ -117,23 +117,23 @@ if __name__ == '__main__':
 
 # current AEP is  431.7379718736261
 
-# current AEP is  441.72832466711196
+# current AEP is  441.72832466711196 ## 0.46
 
-# current AEP is  451.8058181163781
+# current AEP is  451.8058181163781 ## 0.63
 
-# current AEP is  461.9493505340189
+# current AEP is  461.9493505340189  ## 0.46
 
-# current AEP is  471.8984809066559
+# current AEP is  471.8984809066559   ## 0.47
 
-# current AEP is  481.8292400676834
+# current AEP is  481.8292400676834  ## 0.47
 
-# current AEP is  491.7446518025497
+# current AEP is  491.7446518025497  ## 0.4
 
-# current AEP is  501.62007486917264
+# current AEP is  501.62007486917264 ## 0.35
 
-# current AEP is  511.2628496576083
+# current AEP is  511.2628496576083 ## 0.46
 
-# current AEP is  521.0449146304829
+# current AEP is  521.0449146304829 ## 0.35
 
-# current AEP is  530.7669859084266
+# current AEP is  530.7669859084266 ## 0.3
 
