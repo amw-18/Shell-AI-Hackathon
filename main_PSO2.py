@@ -1,20 +1,20 @@
 from PSO.utils2 import *
 
 if __name__ == '__main__':
-    n_turbs = 50
-    in_turbs = n_turbs - 49
+    n_turbs = 44
+    in_turbs = 1
 
-    n_part = 8
+    n_part = 20
 
     oswarm = get_init(in_turbs, n_part=n_part)
   
     # years = ['09']#,'08','09','13','14','15','17']
-    years = ['08','09','13','14','15','17']
+    years = ['07','08','09','13','14','15','17']
     kwargs = parse_data_PSO(n_turbs, years)
 
     # pso global optimizer parameters
     k = 1   # damping factor
-    w = 0.726    # inertia
+    w = 0.7296    # inertia
     c1 = 0.5*(w + 1)**2   # cognitive
     c2 = c1   # social
 
@@ -41,8 +41,8 @@ if __name__ == '__main__':
     pos = particle.reshape((kwargs['n_turbs'], 2))
 
     # visualizing the optimized answer
-    fig = plt.figure(figsize=(6,6))
-    ax2 = plt.gca()
-    ax2.set_aspect(1)
-    ax2.scatter(pos[:,0],pos[:,1], s=900)
-    plt.show()
+    # fig = plt.figure(figsize=(6,6))
+    # ax2 = plt.gca()
+    # ax2.set_aspect(1)
+    # ax2.scatter(pos[:,0],pos[:,1], s=900)
+    # plt.show()

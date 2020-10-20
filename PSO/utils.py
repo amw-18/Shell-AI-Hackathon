@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import pyswarms as ps 
 from pyswarms.utils.plotters import plot_cost_history
+from shapely.geometry import Point, Polygon, MultiPoint, GeometryCollection
 
 import matplotlib.pyplot as plt 
 
@@ -63,10 +64,43 @@ def get_extra_turb(init_pos):
 
     return ans
 
-def get_particles(n_turbs, n_part, determined):
+def get_extra_turb2(init_pos):
+    left = 450
+    right = 3550
+    mid = (right+left)/2
+    rect1 = Polygon([(left,left), (left,mid), (mid,mid), (mid,left)])
+    rect2 = Polygon([(left,mid), (left,right), (mid,right), (mid,mid)])
+    rect3 = Polygon([(mid,mid), (mid,right), (right,right), (right,mid)])
+    rect4 = Polygon([(mid,left), (mid,mid), (right,mid), (right,left)])
+    rects = [rect1, rect2, rect3, rect4]
+    ans = [*init_pos]
+    P = [Point(elem) for elem in ans]
+    counts = [0, 0, 0, 0]
+    for point in P:
+        for i, rect in enumerate(rects):
+            if rect.contains(point):
+                counts[i] += 1
+    
+    chosen = rects[counts.index(min(counts))]
+    x_min, y_min, x_max, y_max = chosen.bounds
+    ans.append(np.array([np.random.uniform(x_min, x_max), np.random.uniform(y_min, y_max)]))
+    # ans.append(np.random.uniform(450, 3550, 2))
+    ans = np.array(ans)
+    
+    # plt.scatter(ans[:,0], ans[:,1])
+    # plt.show()
+
+
+    return ans
+
+def get_particles(n_turbs, n_part, determined, type):
+    if type == '1':
+        func = get_extra_turb
+    else:
+        func = get_extra_turb2
     all_particles = np.ndarray((n_part,2*n_turbs))
     for _ in range(n_part):
-        particle = get_extra_turb(determined)
+        particle = func(determined)
         all_particles[_,:] = particle.flatten()
 
     return all_particles
@@ -177,7 +211,7 @@ def get_smart_arrangement(n_turbs=50):
     remaining = n_turbs - len(ans)
     ans.extend(get_random_arrangement(remaining, a=450, b=3550))
     ans = np.array(ans)
-    ans[:49,:] = np.array(pd.read_csv('C:/Users/awals/Downloads/Shell AI Hackathon/PSO/brute6/49.csv'))[:49,:]
+    ans[:46,:] = np.array(pd.read_csv('C:/Users/awals/Downloads/Shell AI Hackathon/PSO/brute7/46.csv'))
     # plt.scatter(ans[:,0],ans[:,1])
     # plt.show()
     return ans

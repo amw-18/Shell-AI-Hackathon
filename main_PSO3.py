@@ -4,11 +4,11 @@ if __name__ == '__main__':
     # swarm size
     n_part = 40
 
-    determined = np.array(pd.read_csv('C:/Users/awals/Downloads/Shell AI Hackathon/PSO/brute6/39.csv'))
+    determined = np.array(pd.read_csv('C:/Users/awals/Downloads/Shell AI Hackathon/PSO/brute7/49.csv'))
 
-    for n_turbs in range(40, 51):
+    for n_turbs in range(50, 51):
         # getting initial swarm
-        oswarm = get_particles(n_turbs, n_part, determined)
+        oswarm = get_particles(n_turbs, n_part, determined, '1')
         # r_particle = oswarm[0].reshape((n_turbs, 2))
         # plt.scatter(r_particle[:,0], r_particle[:, 1])
 
@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
         # pso global optimizer parameters
         k = 1   # damping factor
-        w = 0.72    # inertia
+        w = 0.7296    # inertia
         c1 = 0.5*(w + 1)**2   # cognitive
         c2 = c1   # social
 
@@ -35,22 +35,22 @@ if __name__ == '__main__':
             # creating the optimizer
             optimizer = get_optimizer(n_part, n_turbs, c1, c2, w, init_vals=oswarm)
             # optimizing
-            cost, pos = optimizer.optimize(obj, iters=1000, n_processes=12, verbose=False, damping=k, kwargs=kwargs)
+            cost, pos = optimizer.optimize(obj, iters=1000, n_processes=8, verbose=True, damping=k, kwargs=kwargs)
             # print(-np.mean(obj(optimizer.swarm.position, kwargs)))
-            oswarm = optimizer.swarm.position
+            # oswarm = optimizer.swarm.position
             oswarm[np.random.randint(n_part),:] = pos
             print('current AEP is ', -kwargs['ideal_AEP']*cost)
             print('ideal AEP is', kwargs['ideal_AEP'])
             # plot_cost_history(optimizer.cost_history, ax=ax)
-            w = 0.003
+            w = 0.004
             c1 = 0.4
             c2 = 3
 
         determined = pos.reshape((n_turbs, 2))
         # plt.scatter(determined[:,0], determined[:,1])
         # plt.show()
-        df = pd.DataFrame(determined,columns=['x','y'])
-        df.to_csv(f"PSO/brute6/{n_turbs}_2.csv", index=False)
+        # df = pd.DataFrame(determined,columns=['x','y'])
+        # df.to_csv(f"PSO/brute7/{n_turbs}.csv", index=False)
     # visualizing the optimized answer
     # pos = pos.reshape((n_turbs,2))
     # fig = plt.figure(figsize=(6,6))
